@@ -1,0 +1,82 @@
+
+<div class="content-box"><!-- Start Content Box -->
+
+<div class="content-box-header">
+<h3>{{$a->_record->_metaEntity->label}} 詳細</h3>
+<div class="clear"></div>
+</div> <!-- End .content-box-header -->
+
+<div class="content-box-content">
+
+{{include file='admin/parts/message_area.tpl'}}
+
+<form method="post" action="create.html">
+<input type="hidden" name="id" value="{{$a->id|escape}}" />
+
+<fieldset>
+<p>
+<label for="publish_flg">公開状態</label>
+<span>{{$a->publish_flg|label:$a->publish_flgOptions()}}</span>
+</p>
+<p>
+<label for="reserve_date_y">公開開始日</label>
+<span>{{$a->publish_start_dt|escape}}</span>
+</p>
+<p>
+<label for="reserve_date_y">公開終了日</label>
+<span>{{$a->publish_end_dt|escape}}</span>
+</p>
+<p>
+<label for="seq">並び順</label>
+<span>{{$a->seq|escape}}</span>
+</p>
+
+{{foreach from=$a->_record->_metaAttributes item=attr}}{{assign var=pname value=$attr->pname}}
+{{if $attr->data_type eq '1' || $attr->data_type eq '2'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}</label>
+<span>{{$a->$pname|escape|nl2br}}</span>
+</p>
+{{elseif $attr->data_type eq '4' || $attr->data_type eq '5'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}</label>
+<span>{{$a->$pname|label:$attr->getOptions()}}</span>
+</p>
+{{elseif $attr->data_type eq '3' || $attr->data_type eq '6'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}</label>
+<span>{{if $a->$pname}}{{foreach from=$a->$pname item=cb name=cb}}{{$cb|label:$attr->getOptions()}}{{if ! $smarty.foreach.cb.last}}, {{/if}}{{/foreach}}{{/if}}</span>
+</p>
+{{elseif $attr->data_type eq '7'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}</label>
+{{if $a->$pname}}<img src="{{$a->basePath()}}/upload/{{$a->$pname}}" />{{/if}}
+</p>
+<div class="clear"></div>
+{{elseif $attr->data_type eq '8'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}</label>
+<span>{{$a->_record->refLabel($pname)|escape}}</span>
+</p>
+{{elseif $attr->data_type eq '9'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}</label>
+<div style="display:block; width: 100%; ">
+{{$a->$pname}}
+</div>
+</p>
+{{elseif $attr->data_type eq '10'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}</label>
+<span><a href="{{$a->$pname|escape}}" target="_blank">{{$a->$pname|escape}}</a></span>
+</p>
+{{/if}}
+{{/foreach}}
+<p>
+<input type="submit" value="編集する" class="button" />
+</p>
+</fieldset>
+</form>
+
+</div> <!-- End .content-box-content -->
+</div> <!-- End .content-box -->

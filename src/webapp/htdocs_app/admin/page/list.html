@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/css/pagination.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/jquery.pagination.js"></script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var L = {};
+L.basePath = $('meta[name="X-T2C-BasePath"]').attr('content') + "/";
+
+jQuery(function($){
+    // pagination
+    $("#pagination").pagination($("#numOfResults").val(), paginationOpts);
+    $("#doSearch").click(function() {
+        $('input[name="pagenum"]').val(0);
+    });
+    $(".ssiTag").click(function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        var ssi = '!--#include virtual="' + url + '"--';
+        $('#ssiTagBox input[name="ssi"]').val("<" + ssi + ">");
+        $.facebox($("#ssiTagBox > div").clone());
+    });    
+});
+
+//]]>
+</script>
+</head>
+<body class="menu_admin menu_page"><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+
+{{include file='admin/parts/sidebar.html'}}
+
+<div id="main-content"> <!-- Main Content Section with everything -->
+
+<div class="main-content-header">
+<h2>ページ一覧</h2>
+<div style="float:left; vertical-align:middle; padding-top: 7px; padding-left: 15px;">
+<form method="get" action="create.html">
+<fieldset>
+<input type="submit" value="新規登録" class="button" />
+</fieldset>
+</form>
+</div>
+<div class="clear"></div>
+</div>
+
+{{include file='admin/parts/notification.tpl'}}
+
+{{if $a->dispResult}}
+<div class="notification information png_bg">
+<div>
+{{if $a->dispResult}}
+検索結果 {{$a->numOfResults|escape}}件 ヒットしました。
+{{else}}
+検索条件を入力してください。
+{{/if}}
+</div>
+</div>
+{{/if}}
+
+<form method="post" action="list.html" id="searchForm">
+<input type="hidden" name="numOfResults" value="{{$a->numOfResults|escape}}" id="numOfResults" />
+<input type="hidden" name="pagenum" value="{{$a->pagenum|escape}}" id="pagenum" />
+<input type="hidden" name="limit" value="{{$a->limit|escape}}" id="limit" />
+
+<table>
+<thead>
+<tr>
+<th scope="col" class="nowrap">状態</th>
+<th scope="col" class="nowrap">ページ名<br/><input type="text" name="srch_name" value="{{$a->srch_name|escape}}" class="text-input" size="35" /></th>
+<th scope="col" class="nowrap">URL<br /><input type="text" name="srch_url" value="{{$a->srch_url|escape}}" class="text-input" size="35" /></th>
+<th scope="col" class="nowrap">種類</th>
+<th scope="col" class="nowrap">オブジェクト<br/>
+<select name="srch_meta_entity_id" class="text-input">
+<option value="">----</option>
+{{html_options options=$a->meta_entity_idOptions() selected=$a->srch_meta_entity_id}}
+</select>
+</th>
+<th scope="col" class="nowrap">&nbsp;<br/><input id="doSearch" type="submit" name="action:doSearch" value="絞り込む" class="button" /></th>
+</tr>
+</thead>
+{{if $a->dispResult}}
+<tfoot>
+<tr>
+<td colspan="6">
+<div id="pagination" class="pagination float_right"></div>
+<div class="clear"></div>
+</td>
+</tr>
+</tfoot>
+<tbody>
+{{foreach from=$a->searchResult item=page}}
+<tr>
+<td class="nowrap">{{$page->publish_flg|label:$a->publish_flgOptions()}}</td>
+<td class="nowrap">{{$page->name|escape}}</td>
+<td class="nowrap">{{$page->url|escape}}{{if $page->page_type eq '1'}}(/レコードID).html{{else}}.html{{/if}}</td>
+<td class="nowrap">{{$page->page_type|label:$a->getOptions('Page','page_type')}}</td>
+<td>{{$page->meta_entity_id|label:$a->meta_entity_idOptions()}}</td>
+<td>
+<a class="buttonLink" href="create.html?id={{$page->id}}">編集</a>
+<a class="buttonLink" href="list.html?action:doDelete=true&id={{$page->id}}" onclick="return confirm('ページを削除します。よろしいですか？');">削除</a>
+<a class="buttonLink" href="{{$a->appPath()}}/{{$page->url}}.html?preview=1" target="_blank">プレビュー</a>
+<a class="buttonLink" href="template.html?id={{$page->id}}">テンプレート編集</a>
+<a class="buttonLink ssiTag" href="{{$a->appPath()}}/teeple_controller.php/{{$page->url}}{{if $page->page_type eq '1'}}/レコードID{{/if}}.html">SSIタグ</a>
+</td>
+</tr>
+{{/foreach}}
+</tbody>
+{{/if}}
+</table>
+</form>
+
+<!-- #footer -->
+{{include file='admin/parts/footer.html'}}
+
+</div> <!-- End #main-content -->
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/my.js"></script>
+<div id="ssiTagBox" style="display:block; height:0; visibility:hidden;"><!-- SSITAG -->
+<div>
+<form>
+<small>※レコードIDは実際のIDに置き換えてください。</small><br/>
+<input type="text" name="ssi" value="" class="text-input large-input" readonly="readonly" onclick="this.focus();this.select()" />
+</form>
+</div>
+</div>
+</div></body>
+</html>

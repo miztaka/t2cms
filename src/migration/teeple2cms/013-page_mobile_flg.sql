@@ -1,0 +1,1 @@
+ALTER TABLE page ADD mobile_flg tinyint;

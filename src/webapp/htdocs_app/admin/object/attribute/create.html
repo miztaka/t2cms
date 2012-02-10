@@ -1,0 +1,87 @@
+
+<div class="main-content-header">
+<h2>カラムの登録/編集</h2>
+</div>
+
+<div id="message_area">
+{{include file='admin/parts/message_area.tpl'}}
+</div>
+
+<form id="attributeForm" method="post" action="{{$a->appPath()}}/admin/object/attribute/create.html">
+<input type="hidden" name="crudType" value="{{$a->crudType|escape}}" />
+<input type="hidden" name="meta_entity_id" value="{{$a->meta_entity_id|escape}}" />
+<input type="hidden" name="id" value="{{$a->id|escape}}" />
+
+<fieldset>
+<p>
+<label for="label">表示ラベル<sup title="必須">*</sup></label>
+<input type="text" name="label" value="{{$a->label|escape}}" class="text-input medium-input" />
+</p>
+<p>
+<label for="pname">参照名<sup title="必須">*</sup></label>
+<input type="text" name="pname" value="{{$a->pname|escape}}" class="text-input medium-input" /><br/>
+<small>英小文字ではじまり英数小文字と_(アンダースコア)が使用できます。</small>
+</p>
+<p>
+<label for="data_type">入力タイプ<sup title="必須">*</sup></label>
+<select id="data_type" name="data_type">
+<option value="">選択してください</option>
+{{html_options options=$a->getOptions('MetaAttribute','data_type') selected=$a->data_type}}
+</select>
+</p>
+<p id="field_options" style="display:none">
+<label>選択肢<sup title="必須">*</sup></label>
+<textarea name="options" class="text-input textarea">{{$a->options|escape}}</textarea>
+</p>
+<p id="field_ref" style="display:none">
+<label>参照オブジェクト<sup title="必須">*</sup></label>
+<select id="ref_entity_id" name="ref_entity_id">
+<option value="">選択してください</option>
+{{html_options options=$a->meta_entity_idOptions() selected=$a->ref_entity_id}}
+</select>
+</p>
+<p>
+<label style="display:inline !important"><input type="checkbox" name="list_flg" value="1" {{if $a->list_flg eq '1'}}checked="checked"{{/if}} />一覧に表示する</label>
+</p>
+
+<a id="toggleFilter" href="#" style="display:block; color:#333; margin: 5px 0 10px 10px; text-decoration: underline;">高度な設定...</a>
+<div style="display:none">
+<p>
+<label style="display:inline !important"><input type="checkbox" name="require_flg" value="1" {{if $a->require_flg eq '1'}}checked="checked"{{/if}} />必須にする</label>
+</p>
+<p>
+<label for="validation">入力値検証ルール（正規表現）</label>
+<input type="text" name="validation" value="{{$a->validation|escape}}" class="text-input large-input" />
+<small>入力値検証ルールを正規表現で指定してください。(例.  /^[0-9]*$/ )</small>
+</p>
+<p>
+<label for="validation_message">検証エラーメッセージ</label>
+<input type="text" name="validation_message" value="{{$a->validation_message|escape}}" class="text-input large-input" />
+<small>検証エラー時に出力するメッセージを入力してください。</small>
+</p>
+</div>
+<p>
+<input type="submit" name="action:doRegist" value="登録する" class="button" onclick="return confirm('カラムを登録します。よろしいですか？');" />
+</p>
+</fieldset>
+</form>
+<script type="text/javascript">
+
+$('#attributeForm').ajaxForm({
+    target: '#message_area'
+});
+
+$('#data_type').change(function() {
+	L.toggle_field_options();
+	L.toggle_field_ref();
+});
+
+L.toggle_field_options();
+L.toggle_field_ref();
+
+$("#toggleFilter").click(function(e) {
+    e.preventDefault();
+    $(this).next().toggle();
+});
+
+</script>

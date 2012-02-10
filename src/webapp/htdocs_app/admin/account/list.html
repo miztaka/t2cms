@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/css/pagination.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/jquery.pagination.js"></script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+
+jQuery(function($){
+    // pagination
+    $("#pagination").pagination($("#numOfResults").val(), paginationOpts);
+    $("#doSearch").click(function() {
+        $('input[name="pagenum"]').val(0);
+    });
+});
+
+//]]>
+</script>
+</head>
+<body class="menu_admin menu_account"><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+
+{{include file='admin/parts/sidebar.html'}}
+
+<div id="main-content"> <!-- Main Content Section with everything -->
+
+<div class="main-content-header">
+<h2>アカウント一覧</h2>
+<div style="float:left; vertical-align:middle; padding-top: 7px; padding-left: 15px;">
+<form method="get" action="create.html">
+<fieldset>
+<input type="submit" value="新規登録" class="button" />
+</fieldset>
+</form>
+</div>
+<div class="clear"></div>
+</div>
+
+{{include file='admin/parts/notification.tpl'}}
+
+{{if $a->dispResult}}
+<div class="notification information png_bg">
+<div>
+{{if $a->dispResult}}
+検索結果 {{$a->numOfResults|escape}}件 ヒットしました。
+{{else}}
+検索条件を入力してください。
+{{/if}}
+</div>
+</div>
+{{/if}}
+
+<form id="searchForm" method="post" action="list.html">
+<input type="hidden" name="numOfResults" value="{{$a->numOfResults|escape}}" id="numOfResults" />
+<input type="hidden" name="pagenum" value="{{$a->pagenum|escape}}" id="pagenum" />
+<input type="hidden" name="limit" value="{{$a->limit|escape}}" id="limit" />
+
+<table>
+<thead>
+<tr>
+<th class="nowrap">メールアドレス<br/><input type="text" name="srch_email" value="{{$a->srch_email|escape}}" class="text-input" size="40" /></th>
+<th class="nowrap">お名前<br/><input type="text" name="srch_name" value="{{$a->srch_name|escape}}" class="text-input" size="30" /></th>
+<th class="nowrap">権限</th>
+<th class="nowrap">PW<br/>連続<br/>間違い</th>
+<th class="nowrap">&nbsp;<br/><input id="doSearch" type="submit" name="action:doSearch" value="絞り込む" class="button" /></th>
+</tr>
+</thead>
+{{if $a->dispResult}}
+<tfoot>
+<tr>
+<td colspan="5">
+<div id="pagination" class="pagination float_right"></div>
+<div class="clear"></div>
+</td>
+</tr>
+</tfoot>
+<tbody>
+{{foreach from=$a->searchResult item=account}}
+<!-- <tr class="{{cycle values='a,b'}}"> -->
+<tr>
+<td>{{$account->login_id|escape}}</td>
+<td>{{$account->name|escape}}</td>
+<td>{{$account->role|label:$a->getOptions('LoginAccount','role')}}</td>
+<td class="right">{{$account->pw_fail_num|escape}}回</td>
+<td>
+<a class="buttonLink" href="create.html?id={{$account->id}}">編集</a>
+<a class="buttonLink" href="list.html?action:doDelete=true&id={{$account->id}}" onclick="return confirm('アカウントを削除します。よろしいですか？');">削除</a>
+<a class="buttonLink" href="list.html?action:doChangePw=true&id={{$account->id}}" onclick="return confirm('パスワードを再発行します。よろしいですか？');">パスワード再発行</a>
+</td>
+</tr>
+{{/foreach}}
+</tbody>
+{{/if}}
+</table>
+</form>
+
+<!-- #footer -->
+{{include file='admin/parts/footer.html'}}
+
+</div> <!-- End #main-content -->
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/my.js"></script>
+</div></body>
+</html>

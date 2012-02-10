@@ -1,0 +1,24 @@
+{{foreach from=$a->searchResult item=p}}
+<tr id="{{$p->id}}">
+<td width="20px" class="dragIcon"><img src="{{$a->basePath()}}/resources/images/icons/arrow_ns.png" /></td>
+<td>{{$p->label|escape}}</td>
+<td>{{$p->pname|escape}}</td>
+<td>{{$p->data_type|label:$a->getOptions('MetaAttribute','data_type')}}</td>
+<td class="center">{{if $p->list_flg eq '1'}}<img src="{{$a->basePath()}}/resources/images/icons/bullet_tick.png" />{{else}}&nbsp;{{/if}}</td>
+<td>
+<a class="buttonLink" href="#" onclick="return L.edit_attribute({{$p->id}})">編集</a>
+<a class="buttonLink" href="#" onclick="return L.delete_attribute({{$p->id}})">削除</a>
+</td>
+</tr>
+{{/foreach}}
+<script type="text/javascript">
+$('#attributeTable tbody tr:even').addClass("alt-row");
+$("#attributeTable").tableDnD({
+	dragHandle: 'dragIcon',
+	onDrop: function(table, row) {
+	    L.attributeTableSeq = $.tableDnD.serialize();
+        $('#attributeTable tbody tr:even').addClass("alt-row");
+        $('#attributeTable tbody tr:odd').removeClass("alt-row");
+    }
+});
+</script>

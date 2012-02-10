@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/jquery.form.js"></script>
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/jquery.tablednd_0_5.js"></script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var L = {};
+L.basePath = $('meta[name="X-T2C-BasePath"]').attr('content') + "/";
+
+// facebox settings
+$.facebox.settings.opacity = 0.5;
+$(document).bind('loading.facebox', function() {
+    $(document).unbind('keydown.facebox');
+    $('#facebox_overlay').unbind('click');
+});
+
+var L = {};
+L.toggle_field_options = function() {
+    var data_type = parseInt($('select[name="data_type"]').val(), 10);
+    if (data_type >= 3 && data_type <= 6) {
+        $('#field_options').show();
+    } else {
+        $('#field_options').hide();
+    }
+};
+L.toggle_field_ref = function() {
+    var data_type = parseInt($('select[name="data_type"]').val(), 10);
+    if (data_type == 8) {
+        $('#field_ref').show();
+    } else {
+        $('#field_ref').hide();
+    }
+};
+L.edit_attribute = function(id) {
+    $.facebox(function() {
+        $.facebox({ ajax: 'attribute/create.html?id=' + id });
+    });
+    return false;
+};
+L.delete_attribute = function(id) {
+    if (confirm("カラムを削除します。よろしいですか？")) {
+        $.facebox(function() {
+            $.facebox({ ajax: 'attribute/create.html?action:doDelete=true&id=' + id });
+        });
+        return false;
+    }
+};
+
+$(function() {
+    L.crudType = $('input[name="crudType"]').val();
+    L.id = $('input[name="id"]').val();
+    if (L.crudType == 'U') {
+        $('#columnContentBox').show();
+        L.list_url = 'attribute/list.html?meta_entity_id=' + L.id;
+        $('#columnData').load(L.list_url);
+    }
+    $('#addColumnButton').click(function() {
+        $.facebox(function() {
+        	$.facebox({ ajax: 'attribute/create.html?meta_entity_id=' + L.id });
+        });
+    });
+    $('#changeSeqButton').click(function() {
+        if (! L.attributeTableSeq) {
+            alert('並び順は変更されていません。');
+            return false;
+        }
+        $.facebox(function() {
+       		$('#columnData').load(L.list_url+'&'+L.attributeTableSeq);
+        });
+        setTimeout(function() {
+        	$(document).trigger('close.facebox');
+        }, 2000);
+        return false;
+    });
+});
+
+//]]>
+</script>
+</head>
+<body class="menu_admin menu_object"><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+
+{{include file='admin/parts/sidebar.html'}}
+
+<div id="main-content"> <!-- Main Content Section with everything -->
+
+{{include file='admin/parts/notification.tpl'}}
+
+<div class="content-box"><!-- Start Content Box -->
+
+<div class="content-box-header">
+<h3>オブジェクト定義の編集{{if $a->_copy}}(コピーして作成){{/if}}</h3>
+<div class="clear"></div>
+</div> <!-- End .content-box-header -->
+
+<div class="content-box-content">
+
+{{include file='admin/parts/message_area.tpl'}}
+
+<form method="post" action="create.html">
+<input type="hidden" name="crudType" value="{{$a->crudType|escape}}" />
+<input type="hidden" name="id" value="{{$a->id|escape}}" />
+<input type="hidden" name="_copy" value="{{$a->_copy|escape}}" />
+
+<fieldset class="column-left">
+<p>
+<label for="label">表示ラベル<sup title="必須">*</sup></label>
+<input type="text" name="label" value="{{$a->label|escape}}" class="text-input medium-input" />
+</p>
+<p>
+<label for="pname">参照名<sup title="必須">*</sup></label>
+<input type="text" name="pname" value="{{$a->pname|escape}}" class="text-input medium-input" /><br/>
+<small>英小文字ではじまり英数小文字と_(アンダースコア)が使用できます。</small>
+</p>
+<p>
+<label for="seq">並び順</label>
+<input type="text" name="seq" value="{{$a->seq|escape}}" class="text-input" size="4" />
+&nbsp;<label style="display:inline !important"><input type="checkbox" name="hide_flg" value="1" {{if $a->hide_flg eq '1'}}checked="checked"{{/if}} />メニューに表示しない</label>
+<br/>
+</p>
+<p>
+<input type="submit" name="action:doRegist" value="登録する" class="button" onclick="return confirm('オブジェクトを登録します。よろしいですか？');" />
+<input type="button" name="doBack" value="戻る" class="button button-back" onclick="location.href='list.html?action:doBack=true';" />
+</p>
+</fieldset>
+<fieldset class="column-right">
+<div class="check_list">
+<label>共通カラムの一覧表示</label>
+<ul>{{html_checkboxes name='list_control' options=$a->getOptions('MetaEntity','list_control') selected=$a->list_control assign=cbs}}
+{{foreach item=cb from=$cbs}}
+<li>{{$cb}}</li>
+{{/foreach}}
+</ul>
+<div class="clear"></div>
+</div>
+<p>
+<label>レコードの表示順</label>
+<input type="text" name="order_by" value="{{$a->order_by|escape}}" class="text-input large-input" />
+</p>
+<p>
+<label>詳細設定</label>
+<label style="display:inline !important"><input type="checkbox" name="api_flg" value="1" {{if $a->api_flg eq '1'}}checked="checked"{{/if}} />APIを公開する</label>
+<small>※投稿APIを公開する場合はチェックを入れてください。</small><br/>
+<label style="display:inline !important"><input type="checkbox" name="exclude_search_flg" value="1" {{if $a->exclude_search_flg eq '1'}}checked="checked"{{/if}} />全文検索対象から外す</label>
+</p>
+</fieldset>
+<div class="clear"></div>
+</form>
+</div> <!-- End .content-box-content -->
+</div> <!-- End .content-box -->
+
+<div id="columnContentBox" class="content-box" style="display:none;"><!-- Start Content Box -->
+
+<div class="content-box-header">
+<h3>カラム定義の編集</h3>
+<div style="float:left; vertical-align:middle; padding-top: 7px; padding-left: 15px;">
+<form>
+<fieldset>
+<input id="addColumnButton" type="button" value="新規カラムの追加" class="button" />
+</fieldset>
+</form>
+</div>
+<div class="clear"></div>
+</div> <!-- End .content-box-header -->
+
+<div class="content-box-content">
+<table id="attributeTable">
+<thead>
+<tr class="nodrop nodrag">
+<th scope="col" class="nowrap"></th>
+<th scope="col" class="nowrap">表示ラベル</th>
+<th scope="col" class="nowrap">参照名</th>
+<th scope="col" class="nowrap">入力タイプ</th>
+<th scope="col" class="nowrap center">一覧表示</th>
+<th scope="col" class="nowrap">&nbsp;</th>
+</tr>
+</thead>
+<tfoot>
+<tr class="nodrop nodrag"><td colspan="6">
+<input id="changeSeqButton" type="button" class="button" value="並び順を確定する" title="並び順を変更した場合はこちらのボタンを押して確定をしてください。" />
+<small>※並び順を変更した場合はこちらのボタンを押して確定をしてください。</small>
+</td></tr>
+</tfoot>
+<tbody id="columnData">
+</tbody>
+</table>
+
+</div> <!-- End .content-box-content -->
+</div> <!-- End .content-box -->
+
+<!-- #footer -->
+{{include file='admin/parts/footer.html'}}
+
+</div> <!-- End #main-content -->
+</div></body>
+</html>

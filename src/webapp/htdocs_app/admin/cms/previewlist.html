@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+<meta name="X-T2C-BasePath" content="{{$a->basePath()}}" />
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/css/style.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/css/invalid.css" type="text/css" media="screen" />   
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/css/blue.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/css/custom.css" type="text/css" media="screen" />
+<!--[if lte IE 7]>
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/css/ie.css" type="text/css" media="screen" />
+<![endif]-->
+<!-- Internet Explorer .png-fix -->
+<!--[if IE 6]>
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/DD_belatedPNG_0.0.7a.js"></script>
+<script type="text/javascript">
+    DD_belatedPNG.fix('.png_bg, img, li');
+</script>
+<![endif]-->
+</head>
+<body style="background-image: none;">
+
+{{if $r->isError()}}
+{{include file='admin/parts/message_area.tpl'}}
+{{else}}
+<div id="messages" style="padding: 10px">
+<h4>プレビューするページをクリックしてください</h4>
+{{foreach from=$a->urls item=url}}
+<p><a href="{{$url->href}}">{{$url->name}}</a></p>
+{{/foreach}}
+</div>
+{{/if}}
+
+</body>
+</html>

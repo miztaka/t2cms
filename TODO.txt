@@ -1,0 +1,2 @@
+global.js - toggleをjQueryプラグイン化
+log4php 2.0 の導入

@@ -1,0 +1,84 @@
+@charset "UTF-8";
+
+.nowrap { white-space: nowrap; }
+
+.left { text-align: left; }
+.right { text-align: right; }
+
+a.buttonLink {
+    border: solid 1px;
+    text-decoration: none;
+    font-size: 0.8em;
+    cursor: pointer;
+    color: #666;
+    padding: 2px;
+    margin: 2px;
+    line-height: 270%;
+    white-space: nowrap;
+    word-break: none;
+}
+
+hr.space {
+    display: block;
+    height: 10px;
+    border: 0;
+}
+
+.float_left { float: left; display:inline; margin-right: 1em; margin-bottom: 0.15em; }
+.float_right { float: right; display:inline; margin-left: 1em; margin-bottom: 0.15em; }
+.center { text-align:center; }
+
+.button-back {
+                background: #459300 url('../images/bg-button-green.gif') top left repeat-x !important;
+                border: 1px solid #459300 !important;
+                color: #fff !important;
+}
+
+.main-content-header {
+                background: #e5e5e5 url('../images/bg-content-box.gif') top left repeat-x;
+                margin-top: 1px;
+                height: 40px;
+                border-radius: 6px 6px 6px 6px;
+                margin-bottom: 10px;
+                }
+
+.main-content-header h2 {
+                padding: 12px 15px 10px;
+                float: left;
+                }
+
+label sup {
+	color: #880000;
+}
+
+form p small {
+	color: #880000;
+}
+
+.dragIcon {
+    cursor: move;
+}
+
+img.sumb {
+    float: left;
+    max-height: 100px;
+}
+
+div.check_list {
+	display: block;
+	margin: 5px 0 10px 0;
+}
+div.check_list ul {
+	padding: 0 0 0 10px !important;
+}
+div.check_list ul li {
+    float: left;
+    display: block;
+    list-style-type: none;
+    margin-right: 15px;
+    background: none !important;
+    padding: 0 !important;
+}
+div.check_list ul li label {
+    font-weight: normal !important;
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>teeple exception page</title>
+</head>
+<body>
+<h3>Actionクラス {{$actionName}} を自動生成しますか？ </h3>
+※Actionクラス {{$actionName}} が存在しません。
+雛形を生成したい場合は、ボタンを押してください。
+
+<table border="1">
+<tr>
+<td>クラスファイル</td>
+<td>{{$classfile|escape}}</td>
+<td>{{$isClassfile|escape}}</td>
+</tr>
+<tr>
+<td>HTMLファイル</td>
+<td>{{$templatefile|escape}}</td>
+<td>{{$isTemplatefile|escape}}</td>
+</tr>
+</table>
+<form method="post">
+<input type="hidden" name="__CREATE_ACTION" value="1" />
+<input type="submit" value="雛形を自動生成する" />
+</form>
+</body>
+</html>

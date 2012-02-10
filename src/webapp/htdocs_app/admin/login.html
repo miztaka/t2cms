@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta name="robots" content="noindex,nofollow" />
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+</head>
+<body id="login">
+<div id="login-wrapper" class="png_bg">
+
+<div id="login-top">
+<h1>{{$smarty.const.HTML_TITLE_ADMIN}}</h1>
+<!-- Logo (221px width) 
+<img id="logo" src="{{$a->basePath()}}/resources/images/logo.png" alt="Simpla Admin logo" />
+-->
+</div> <!-- End #logn-top -->
+
+<div id="login-content">
+<form method="post" action="login.html">
+
+{{include file='admin/parts/message_area.tpl'}}
+<div class="notification information png_bg">
+<div>
+IDとパスワードを入力してください。
+</div>
+</div>
+
+<p>
+<label>ログインID(メールアドレス)</label>
+<input class="text-input" type="text" id="login_id" name="login_id" value="{{$a->login_id|escape}}" />
+</p>
+<div class="clear"></div>
+
+<p>
+<label>パスワード</label>
+<input class="text-input" type="password" id="login_pw" name="login_pw" />
+</p>
+<div class="clear"></div>
+
+<p>
+<input class="button" type="submit" value="ログイン" name="action:doLogin" />
+</p>
+
+</form>
+</div> <!-- End #login-content -->
+
+</div> <!-- End #login-wrapper -->
+</body>
+</html>

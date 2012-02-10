@@ -1,0 +1,1 @@
+ALTER TABLE page ADD publish_flg TINYINT NOT NULL DEFAULT 1;

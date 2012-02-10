@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+<script language="JavaScript" type="text/javascript">
+jQuery(function($) {
+    if (parseInt($('input[name="page_type"]').val(), 10) == 3) {
+        $('#tpl_choice').show();
+    }
+});
+</script>
+</head>
+<body class="menu_admin menu_page"><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+
+{{include file='admin/parts/sidebar.html'}}
+
+<div id="main-content"> <!-- Main Content Section with everything -->
+
+<h2>ページテンプレートの編集</h2>
+
+{{include file='admin/parts/message_area.tpl'}}
+
+<form method="post" action="template.html">
+<input type="hidden" name="crudType" value="{{$a->crudType|escape}}" />
+<input type="hidden" name="id" value="{{$a->id|escape}}" />
+<input type="hidden" name="template_path" value="{{$a->template_path|escape}}" />
+<input type="hidden" name="encoding" value="{{$a->encoding|escape}}" />
+<input type="hidden" name="page_type" value="{{$a->page_type|escape}}" />
+<div id="tpl_choice" style="display:none;">
+<a href="?id={{$a->id}}">フォームページを編集...</a>&nbsp;&nbsp;
+<a href="?id={{$a->id}}&tpl=confirm">確認ページを編集...</a>
+<a href="?id={{$a->id}}&tpl=complete">完了ページを編集...</a>
+</div>
+<fieldset>
+<p>
+<label>テンプレートファイル名 {{$a->template_path}}</label>
+<textarea name="template" class="text-input" rows="50">{{$a->template|escape}}</textarea>
+</p>
+<p>
+<input type="submit" name="action:doRegist" value="更新する" class="button" onclick="return confirm('テンプレートを更新します。よろしいですか？');" />
+<input type="button" name="doBack" value="戻る" class="button button-back" onclick="location.href='list.html?action:doBack=true';" />
+</p>
+</fieldset>
+</form>
+
+<!-- #footer -->
+{{include file='admin/parts/footer.html'}}
+
+</div> <!-- End #main-content -->
+</div></body>
+</html>

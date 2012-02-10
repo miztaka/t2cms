@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var L ={};
+L.set_url_prefix = function() {
+    var page_type = $('select[name="page_type"]').val();
+    if (page_type == 1) {
+    	$('#url_prefix').html("(/レコードID).html");
+    } else {
+    	$('#url_prefix').html(".html");
+    }
+};
+L.toggle_page_limit = function() {
+    var page_type = $('select[name="page_type"]').val();
+    if (page_type == 2) {
+        $('#page_limit').show();
+    } else {
+        $('#page_limit').hide();
+    }
+};
+L.toggle_form_page = function() {
+    var page_type = $('select[name="page_type"]').val();
+    if (page_type == 3) {
+        $('.form_page').show();
+    } else {
+        $('.form_page').hide();
+    }
+};
+
+jQuery(function($) {
+	$('select[name="page_type"]').change(function() {
+		L.set_url_prefix();
+		L.toggle_page_limit();
+		L.toggle_form_page();
+	});
+	L.set_url_prefix();
+	L.toggle_page_limit();
+	L.toggle_form_page();
+});
+
+//]]>
+</script>
+</head>
+<body class="menu_admin menu_page"><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+
+{{include file='admin/parts/sidebar.html'}}
+
+<div id="main-content"> <!-- Main Content Section with everything -->
+
+<div class="content-box"><!-- Start Content Box -->
+
+<div class="content-box-header">
+<h3>ページ設定の登録/編集</h3>
+<div class="clear"></div>
+</div> <!-- End .content-box-header -->
+
+<div class="content-box-content">
+
+{{include file='admin/parts/message_area.tpl'}}
+
+<form method="post" action="create.html">
+<input type="hidden" name="crudType" value="{{$a->crudType|escape}}" />
+<input type="hidden" name="id" value="{{$a->id|escape}}" />
+
+<fieldset>
+<div class="check_list">
+<label for="publish_flg">公開状態<sup title="必須">*</sup></label>
+{{html_radios name='publish_flg' options=$a->publish_flgOptions() selected=$a->publish_flg assign=cbs}}
+<ul>{{foreach item=cb from=$cbs}}
+<li>{{$cb}}</li>
+{{/foreach}}
+</ul>
+<div class="clear"></div>
+</div>
+<p>
+<label for="name">ページ名<sup title="必須">*</sup></label>
+<input type="text" name="name" value="{{$a->name|escape}}" class="text-input medium-input" />
+</p>
+<p>
+<label for="role">ページの種類<sup title="必須">*</sup></label>
+<select name="page_type">
+<option value="">選択してください</option>
+{{html_options options=$a->getOptions('Page','page_type') selected=$a->page_type}}
+</select>
+</p>
+<p>
+<label for="role">対象オブジェクト<sup title="必須">*</sup></label>
+<select name="meta_entity_id">
+<option value="">選択してください</option>
+{{html_options options=$a->meta_entity_idOptions() selected=$a->meta_entity_id}}
+</select>
+</p>
+<p>
+<label for="name">ページURL<sup title="必須">*</sup></label>
+{{$a->baseUrl()}}/&nbsp;<input type="text" name="url" value="{{$a->url|escape}}" class="text-input small-input" />&nbsp;<span id="url_prefix">.html</span><br/>
+<small>英数小文字を使用して構成してください。各パスの先頭に数字は使えません。(例. foo/bar.html)</small>
+</p>
+<p>
+<label for="name">テンプレートファイル名<sup title="必須">*</sup></label>
+<input type="text" name="template_path" value="{{$a->template_path|escape}}" class="text-input medium-input" />.html<br />
+<small>英数小文字を使用して構成してください。各パスの先頭に数字は使えません。(例. foo/bar.html)</small><br/>
+<small>テンプレートファイルは「 {{$smarty.const.MODULE_DIR}}/ 」からのパスとなります。</small>
+</p>
+<p id="page_limit">
+<label>1ページ表示件数</label>
+<input type="text" name="page_limit" value="{{$a->page_limit|escape}}" class="text-input" size="5" /> 件
+</p>
+<p>
+<label>文字コード</label>
+<select name="encoding">
+{{html_options options=$a->getOptions('Page','encoding') selected=$a->encoding}}
+</select>
+</p>
+<div class="check_list">
+<label>ページ属性</label>
+<ul>
+<li><label><input type="checkbox" name="mobile_flg" value="1" {{if $a->mobile_flg eq '1'}}checked="checked"{{/if}} />モバイル</label></li>
+</ul>
+<div class="clear"></div>
+</div>
+<p class="form_page">
+<label>通知先メールアドレス</label>
+<input type="text" name="notify_email" value="{{$a->notify_email|escape}}" class="text-input medium-input" /><br/>
+<small>投稿があった際に通知されます。</small>
+</p>
+<div class="check_list form_page">
+<label>投稿データの公開状態</label>
+{{html_radios name='default_publish_flg' options=$a->publish_flgOptions() selected=$a->default_publish_flg assign=cbs}}
+<ul>{{foreach item=cb from=$cbs}}
+<li>{{$cb}}</li>
+{{/foreach}}
+</ul>
+<div class="clear"></div>
+</div>
+<p>
+<input type="submit" name="action:doRegist" value="登録する" class="button" onclick="return confirm('ページを登録します。よろしいですか？');" />
+<input type="button" name="doBack" value="戻る" class="button button-back" onclick="location.href='list.html?action:doBack=true';" />
+</p>
+</fieldset>
+</form>
+
+</div> <!-- End .content-box-content -->
+</div> <!-- End .content-box -->
+
+<!-- #footer -->
+{{include file='admin/parts/footer.html'}}
+
+</div> <!-- End #main-content -->
+</div></body>
+</html>

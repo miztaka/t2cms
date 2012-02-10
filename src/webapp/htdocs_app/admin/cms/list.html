@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/css/pagination.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/jquery.pagination.js"></script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var L = {};
+L.basePath = $('meta[name="X-T2C-BasePath"]').attr('content') + "/";
+
+// facebox settings
+$.facebox.settings.opacity = 0.5;
+$(document).bind('loading.facebox', function() {
+    $(document).unbind('keydown.facebox');
+    $('#facebox_overlay').unbind('click');
+});
+$(document).bind('beforeReveal.facebox', function() {
+    $('#facebox .body').width('600px');
+});
+
+jQuery(function($){
+    // pagination
+    $("#pagination").pagination($("#numOfResults").val(), paginationOpts);
+    $("#doSearch").click(function() {
+        $('input[name="pagenum"]').val(0);
+    });
+    $("#addSearchItem").click(function(e) {
+        e.preventDefault();
+        var dom = $("#searchFormTemplate").html();
+        $(dom).insertBefore(this);
+    });
+    $("#toggleFilter").click(function(e) {
+        e.preventDefault();
+        $(this).next().toggle();
+    });
+    $('a[rel="ajax"]').click(function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        $.facebox(function() {
+            $.facebox({ ajax: url });
+        });
+    });
+});
+
+//]]>
+</script>
+<style type="text/css">
+td { vertical-align: middle; }
+</style>
+</head>
+<body class="menu_cms_{{$a->_record->_metaEntity->id}}"><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+
+{{include file='admin/parts/sidebar.html'}}
+
+<div id="main-content"> <!-- Main Content Section with everything -->
+
+<div class="main-content-header">
+<h2>{{$a->_record->_metaEntity->label}} 一覧</h2>
+<div style="float:left; vertical-align:middle; padding-top: 7px; padding-left: 15px;">
+<form method="get" action="create.html">
+<fieldset>
+<input type="hidden" name="meta_entity_id" value="{{$a->meta_entity_id}}" />
+<input type="submit" value="新規登録" class="button" />
+</fieldset>
+</form>
+</div>
+<div class="clear"></div>
+</div>
+
+<form id="searchForm" method="post" action="list.html">
+<input type="hidden" name="numOfResults" value="{{$a->numOfResults|escape}}" id="numOfResults" />
+<input type="hidden" name="pagenum" value="{{$a->pagenum|escape}}" id="pagenum" />
+<input type="hidden" name="limit" value="{{$a->limit|escape}}" id="limit" />
+<input type="hidden" name="meta_entity_id" value="{{$a->meta_entity_id}}" id="meta_entity_id" />
+
+<a id="toggleFilter" href="#" style="display:block; color:#333; margin: 5px 0 10px 10px; text-decoration: underline;">絞込み条件を設定する...</a>
+<div class="content-box" style="display:none"><!-- Start Content Box -->
+<div class="content-box-content" >
+<fieldset>
+{{foreach from=$a->refAttributes() item=refAttr}}{{assign var=search_ref value=$a->search_ref}}{{assign var=refname value=$refAttr->pname}}
+<p>{{$refAttr->label}}が<select name="search_ref[{{$refname}}]">
+<option value="">----</option>
+{{html_options options=$refAttr->getRefOptions() selected=$search_ref[$refname]}}
+</select>と一致する</p>
+{{/foreach}}
+{{if $a->search_field}}
+{{section name=cnt loop=$a->search_field}}
+<p>
+<select name="search_field[]">
+<option value="">----</option>
+{{html_options options=$a->metaAttributeOptions() selected=$a->search_field[cnt]}}
+</select>
+が
+<input type="text" name="search_word[]" value="{{$a->search_word[cnt]}}" class="text-input" />
+<select name="search_ope[]">
+{{html_options options=$a->search_opeOptions() selected=$a->search_ope[cnt]}}
+</select>
+</p>
+{{/section}}
+{{else}}
+<p>
+<select name="search_field[]">
+<option value="">----</option>
+{{html_options options=$a->metaAttributeOptions()}}
+</select>
+が
+<input type="text" name="search_word[]" value="" class="text-input" />
+<select name="search_ope[]">
+{{html_options options=$a->search_opeOptions()}}
+</select>
+</p>
+{{/if}}
+<a id="addSearchItem" class="buttonLink" href="#">条件追加</a>
+<p>
+<label><input type="checkbox" name="published_only" value="1" {{if $a->published_only}}checked="checked"{{/if}} />公開されているレコードのみ表示する</label>
+</p>
+<p>
+<input id="doSearch" type="submit" name="action:doSearch" value="絞り込む" class="button" />
+</p>
+</fieldset>
+</div>
+</div>
+
+{{include file='admin/parts/notification.tpl'}}
+{{include file='admin/parts/message_area.tpl'}}
+
+{{if $a->dispResult}}
+<div class="notification information png_bg">
+<div>
+{{if $a->dispResult}}
+検索結果 {{$a->numOfResults|escape}}件 ヒットしました。
+{{else}}
+検索条件を入力してください。
+{{/if}}
+</div>
+</div>
+{{/if}}
+
+<table>
+<thead>
+<tr>
+{{foreach from=$a->_list_columns item=col name=col}}
+<th scope="col" class="nowrap">{{$col}}</th>
+{{/foreach}}
+<th scope="col" class="nowrap">&nbsp;</th>
+</tr>
+</thead>
+{{if $a->dispResult}}
+<tfoot>
+<tr>
+<td colspan="{{$smarty.foreach.col.total+1}}">
+<input type="submit" name="action:doDownload" value="CSVダウンロード" class="button" />
+<div id="pagination" class="pagination float_right"></div>
+<div class="clear"></div>
+</td>
+</tr>
+</tfoot>
+<tbody>
+{{foreach from=$a->searchResult item=p}}
+<tr>
+{{foreach from=$a->_list_columns key=k item=col}}
+{{if $k eq 'publish_flg'}}
+<td>{{$p->publish_flg|label:$a->publish_flgOptions()}}</td>
+{{elseif $k eq 'publish_start_dt' || $k eq 'publish_end_dt' || $k eq 'create_time'}}
+<td>{{$p->$k|date_format:$a->datetimeformat()}}</td>
+{{elseif $k|@in_array:$p->getImageFieldNames()}}
+<td>{{if $p->label($k)}}<img src="{{$a->basePath()}}/upload/{{$p->label($k)}}" width="50" />{{else}}&nbsp;{{/if}}</td>
+{{else}}
+<td>{{$p->label($k)|escape}}</td>
+{{/if}}
+{{/foreach}}
+<td style="width:110px">
+<a class="buttonLink" rel="ajax" href="detail.html?id={{$p->id}}">詳細</a>
+<a class="buttonLink" href="create.html?id={{$p->id}}">編集</a>
+<a class="buttonLink" href="create.html?id={{$p->id}}&_copy=1">コピー</a>
+<a class="buttonLink" href="list.html?action:doPreview=true&id={{$p->id}}" target="_blank">プレビュー</a>
+<a class="buttonLink" href="list.html?action:doDelete=true&id={{$p->id}}" onclick="return confirm('レコードを削除します。よろしいですか？');">削除</a>
+</td>
+</tr>
+{{/foreach}}
+</tbody>
+{{/if}}
+</table>
+</form>
+
+<!-- #footer -->
+{{include file='admin/parts/footer.html'}}
+
+</div> <!-- End #main-content -->
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/my.js"></script>
+</div>
+<div id="searchFormTemplate" style="display:none">
+<p>
+<select name="search_field[]">
+<option value="">----</option>
+{{html_options options=$a->metaAttributeOptions()}}
+</select>
+が
+<input type="text" name="search_word[]" value="" class="text-input" />
+<select name="search_ope[]">
+{{html_options options=$a->search_opeOptions()}}
+</select>
+</p>
+</div>
+</body>
+</html>

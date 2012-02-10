@@ -1,0 +1,4 @@
+ALTER TABLE page 
+  ADD name VARCHAR(128) NOT NULL,
+  ADD filter TEXT
+;

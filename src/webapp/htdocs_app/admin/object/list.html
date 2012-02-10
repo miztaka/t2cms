@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/css/pagination.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{{$a->basePath}}/resources/scripts/jquery.pagination.js"></script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+
+jQuery(function($){
+    // pagination
+    $("#pagination").pagination($("#numOfResults").val(), paginationOpts);
+    $("#doSearch").click(function() {
+        $('input[name="pagenum"]').val(0);
+    });
+});
+
+//]]>
+</script>
+</head>
+<body class="menu_admin menu_object"><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+
+{{include file='admin/parts/sidebar.html'}}
+
+<div id="main-content"> <!-- Main Content Section with everything -->
+
+<div class="main-content-header">
+<h2>オブジェクト一覧</h2>
+<div style="float:left; vertical-align:middle; padding-top: 7px; padding-left: 15px;">
+<form method="get" action="create.html">
+<fieldset>
+<input type="submit" value="新規登録" class="button" />
+</fieldset>
+</form>
+</div>
+<div class="clear"></div>
+</div>
+
+{{include file='admin/parts/notification.tpl'}}
+{{include file='admin/parts/message_area.tpl'}}
+
+<form id="searchForm" method="post" action="list.html">
+<input type="hidden" name="numOfResults" value="{{$a->numOfResults|escape}}" id="numOfResults" />
+<input type="hidden" name="pagenum" value="{{$a->pagenum|escape}}" id="pagenum" />
+<input type="hidden" name="limit" value="{{$a->limit|escape}}" id="limit" />
+
+<table>
+<thead>
+<tr>
+<th scope="col" class="nowrap">ID</th>
+<th scope="col" class="nowrap">表示ラベル</th>
+<th scope="col" class="nowrap">参照名</th>
+<th scope="col" class="nowrap">&nbsp;</th>
+</tr>
+</thead>
+{{if $a->dispResult}}
+<tfoot>
+<tr>
+<td colspan="4">
+<div id="pagination" class="pagination float_right"></div>
+<div class="clear"></div>
+</td>
+</tr>
+</tfoot>
+<tbody>
+{{foreach from=$a->searchResult item=p}}
+<tr>
+<td>{{$p->id|escape}}</td>
+<td>{{$p->label|escape}}</td>
+<td>{{$p->pname|escape}}</td>
+<td>
+<a class="buttonLink" href="create.html?id={{$p->id}}">編集</a>
+<a class="buttonLink" href="create.html?id={{$p->id}}&_copy=1">コピー</a>
+<a class="buttonLink" href="list.html?action:doDelete=true&id={{$p->id}}" onclick="return confirm('オブジェクトを削除します。よろしいですか？');">削除</a>
+</td>
+</tr>
+{{/foreach}}
+</tbody>
+{{/if}}
+</table>
+</form>
+
+<!-- #footer -->
+{{include file='admin/parts/footer.html'}}
+
+</div> <!-- End #main-content -->
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/my.js"></script>
+</div></body>
+</html>

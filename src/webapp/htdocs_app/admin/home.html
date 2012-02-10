@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+
+//]]>
+</script>
+</head>
+<body class="menu_home"><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+
+{{include file='admin/parts/sidebar.html'}}
+
+<div id="main-content"> <!-- Main Content Section with everything -->
+
+<div class="main-content-header">
+<h2>Home</h2>
+</div>
+
+{{include file='admin/parts/notification.tpl'}}
+{{include file='admin/parts/message_area.tpl'}}
+
+<p>左のメニューから選択してください。</p>
+
+{{if $smarty.const.SHOW_GENPAGE_MENU}}
+<div class="content-box column-left">
+
+<div class="content-box-header">
+<h3 style="cursor: s-resize;">ページ書き出し機能</h3>
+</div> <!-- End .content-box-header -->
+
+<div class="content-box-content">
+<p>ページを書き出す場合は下のボタンを押してください。</p>
+<div class="notification attention png_bg">
+<div>※この機能を利用するとページは自動更新されなくなりますので、データ更新後には必ずこのボタンを押してください。</div>
+</div>
+<form method="post">
+<input type="submit" name="action:doGeneratePage" value="ページ書き出し" onclick="return confirm('ページの書き出しを行います。よろしいですか？※この処理には時間がかかります。');" class="button" />
+</form>
+</div> <!-- End .content-box-content -->
+</div>
+<div class="clear"></div>
+{{/if}}
+
+<!-- #footer -->
+{{include file='admin/parts/footer.html'}}
+
+</div> <!-- End #main-content -->
+</div></body>
+</html>

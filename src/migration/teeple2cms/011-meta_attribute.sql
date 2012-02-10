@@ -1,0 +1,1 @@
+ALTER TABLE meta_attribute ADD ref_entity_id bigint;

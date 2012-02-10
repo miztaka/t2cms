@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+
+//]]>
+</script>
+</head>
+<body class="menu_admin menu_account"><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+
+{{include file='admin/parts/sidebar.html'}}
+
+<div id="main-content"> <!-- Main Content Section with everything -->
+
+<div class="content-box"><!-- Start Content Box -->
+
+<div class="content-box-header">
+<h3>アカウントの編集</h3>
+<div class="clear"></div>
+</div> <!-- End .content-box-header -->
+
+<div class="content-box-content">
+
+{{include file='admin/parts/message_area.tpl'}}
+
+<form method="post" action="create.html">
+<input type="hidden" name="crudType" value="{{$a->crudType|escape}}" />
+<input type="hidden" name="id" value="{{$a->id|escape}}" />
+
+<fieldset>
+<p>
+<label for="name">お名前<sup title="必須">*</sup></label>
+<input type="text" name="name" value="{{$a->name|escape}}" class="text-input small-input" />
+</p>
+<p>
+<label for="login_id">メールアドレス<sup title="必須">*</sup></label>
+<input type="text" name="login_id" value="{{$a->login_id|escape}}" class="text-input small-input" />
+</p>
+<p>
+<label for="role">権限<sup title="必須">*</sup></label>
+<select name="role" class="small-input">
+<option value="">選択してください</option>
+{{html_options options=$a->roleOptions() selected=$a->role}}
+</select>
+</p>
+<p>
+<input type="submit" name="action:doRegist" value="登録する" class="button" onclick="return confirm('アカウントを作成します。よろしいですか？');" />
+<input type="button" name="doBack" value="戻る" class="button button-back" onclick="location.href='list.html?action:doBack=true';" />
+</p>
+</fieldset>
+</form>
+
+</div> <!-- End .content-box-content -->
+</div> <!-- End .content-box -->
+
+<!-- #footer -->
+{{include file='admin/parts/footer.html'}}
+
+</div> <!-- End #main-content -->
+</div></body>
+</html>

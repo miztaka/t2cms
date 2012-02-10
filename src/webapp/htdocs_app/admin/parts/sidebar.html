@@ -1,0 +1,55 @@
+<!-- Sidebar with logo and menu -->
+<div id="sidebar"><div id="sidebar-wrapper">
+<h1 id="sidebar-title"><a href="#">{{$smarty.const.HTML_TITLE_ADMIN}}</a></h1>
+<!-- Logo (221px wide) -->
+<!-- 
+<a href="#"><img id="logo" src="{{$a->basePath()}}/resources/images/logo.png" alt="Simpla Admin logo" /></a>
+ -->
+          
+<!-- Sidebar Profile links -->
+<div id="profile-links">
+ようこそ {{$a->loginaccount->info->name|escape}} 様 <br/> | <a title="ログアウト" href="{{$a->appPath()}}/admin/login.html">ログアウト</a> | 
+</div>
+
+<ul id="main-nav">  <!-- Accordion Menu -->
+<li>
+<a id="menu_home" href="{{$a->appPath()}}/admin/home.html" class="nav-top-item no-submenu"> <!-- Add the class "no-submenu" to menu items with no sub menu -->
+Home
+</a>
+</li>
+<li>
+<a id="menu_file" href="{{$a->appPath()}}/admin/filemanager.html" class="nav-top-item no-submenu"> <!-- Add the class "no-submenu" to menu items with no sub menu -->
+ファイルの管理
+</a>
+</li>
+
+{{foreach from=$a->objects() item=object}}{{if $object->hide_flg ne '1'}}
+<li>
+<a id="menu_cms_{{$object->id}}" href="{{$a->appPath()}}/admin/cms/list.html?meta_entity_id={{$object->id}}" class="nav-top-item no-submenu"> <!-- Add the class "no-submenu" to menu items with no sub menu -->
+{{$object->label|escape}}
+</a>
+</li>
+{{/if}}{{/foreach}}
+
+{{if $a->loginaccount->hasRole('sysadm,admin')}}
+<li>
+<a id="menu_admin" href="#" class="nav-top-item">
+管理者メニュー
+</a>
+<ul>
+{{if $a->loginaccount->hasRole('sysadm')}}
+<li><a id="menu_object" href="{{$a->appPath()}}/admin/object/list.html">オブジェクト</a></li>
+<li><a id="menu_page" href="{{$a->appPath()}}/admin/page/list.html">ページ</a></li>
+{{/if}}
+<li><a id="menu_account" href="{{$a->appPath()}}/admin/account/list.html">アカウント</a></li>
+</ul>
+</li>
+{{/if}}
+<li>
+<a id="menu_password" href="{{$a->appPath()}}/admin/account/password.html" class="nav-top-item no-submenu">
+パスワード変更
+</a>
+</li>
+</ul> <!-- End #main-nav -->
+
+</div></div> <!-- End #sidebar -->

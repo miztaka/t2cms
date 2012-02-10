@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+{{include file='admin/parts/common_head.html'}}
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/jquery.upload-1.0.0.js"></script>
+<!-- elrte WYSIWYG -->
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/smoothness/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" charset="utf-8"></link>
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/elrte.min.css"                         type="text/css" media="screen" charset="utf-8"></link>
+<script src="{{$a->basePath()}}/resources/elrte/js/jquery-ui-1.8.7.custom.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{$a->basePath()}}/resources/elrte/js/elrte.full.js"                  type="text/javascript" charset="utf-8"></script>
+<script src="{{$a->basePath()}}/resources/elrte/js/i18n/elrte.jp.js"              type="text/javascript" charset="utf-8"></script>
+<!-- elFinder -->
+<script src="{{$a->basePath()}}/resources/elrte/js/elfinder.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{$a->basePath()}}/resources/elrte/js/i18n/elfinder.jp.js"           type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/elfinder.css" type="text/css" media="screen" charset="utf-8"></link>
+<!-- jquery-ui -->
+<script type="text/javascript" src="{{$a->basePath()}}/resources/jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="{{$a->basePath()}}/resources/jquery-ui/js/jquery.ui.datepicker-ja.js"></script>
+<style type="text/css">
+img.calendar {
+    cursor: pointer;
+    }
+</style>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var L = {};
+L.basePath = $('meta[name="X-T2C-BasePath"]').attr('content');
+L.elrte_opts = {
+    lang: 'jp',
+    styleWithCSS: true,
+    height: 500,
+    toolbar: 'maxi',
+    fmAllow: true,
+    absoluteURLs: false,
+    fmOpen : function(callback) {
+    $('<div id="myelfinder" />').elfinder({  
+　　　　    url : L.basePath + '/elfinder.php',
+　　　　    lang : 'jp',
+　　　　    dialog : { width : 900, modal : true, title : 'Files' },
+　　　　    closeOnEditorCallback : true,
+　　　　    editorCallback : callback
+            //cutURL : 'root'
+        })
+    }
+};
+
+$(function() {
+    // ファイルマネージャ
+    $(".fmopen").focus(function() {
+        var jq = $(this);
+        $('<div id="myelfinder" />').elfinder({
+　　　　    url : L.basePath + '/elfinder.php',
+　　　　    lang : 'jp',
+　　　　    dialog : { width : 900, modal : true, title : 'Files' },
+　　　　    closeOnEditorCallback : true,
+　　　　    editorCallback : function(url) {
+　　　　        jq.val(url);
+　　　　    }
+        });
+    });
+    $(".fmclear").click(function(e) {
+        e.preventDefault();
+        $(this).prev().val('');
+    });
+    
+    // ファイルアップロード
+    $("input[type='file']").change(function() {
+        $(this).upload('../ajax/upload.html', function(res) {
+            var id = $(this).attr('id');
+            $('#'+id+'_img').attr('src', res.src).show();
+            $('#'+id+'_img').next().show(); // 削除ボタン表示
+            $('#'+id+'_hidden').attr('value', res.value);
+            //$(res).insertAfter(this);
+        }, 'json');
+    });
+
+    // 画像が無いときは削除ボタンを消す
+    $("img.sumb").each(function() {
+        if ($(this).attr('src') == '') {
+            $(this).next().hide();
+            $(this).hide();
+        }
+    });
+
+    // 削除ボタン押下
+    $(".img_delete").click(function() {
+        if (confirm('画像を削除します。よろしいですか？')) {
+            $(this).prev().attr('src', '').hide();
+            $(this).next().attr('value', '');
+            $(this).hide();
+        }
+    });
+
+    // datepicker
+    $('.calendar').next().datepicker({
+         onClose: function(dateText, inst) {
+             if (! dateText) {
+                 return;
+             }
+             var d = dateText.split('/');
+             $(this).next().val(d[0]);
+             $(this).next().next().val(d[1]);
+             $(this).next().next().next().val(d[2]);
+             if (! $(this).next().next().next().next().val()) {
+            	 if ($(this).hasClass('end_dt')) {
+                	 $(this).next().next().next().next().val("23");
+                 } else {
+                	 $(this).next().next().next().next().val("0");
+                 }
+             }
+             if (! $(this).next().next().next().next().next().val()) {
+            	 if ($(this).hasClass('end_dt')) {
+            		 $(this).next().next().next().next().next().val("59");
+            	 } else {
+            		 $(this).next().next().next().next().next().val("0");
+            	 }
+             }
+          }
+    });
+    $('.calendar').click(function() {
+        $(this).next().focus();
+    });
+});
+//]]>
+</script>
+</head>
+<body class="menu_cms_{{$a->meta_entity_id}}"><div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+
+{{include file='admin/parts/sidebar.html'}}
+
+<div id="main-content"> <!-- Main Content Section with everything -->
+
+<div class="content-box"><!-- Start Content Box -->
+
+<div class="content-box-header">
+<h3>{{$a->_record->_metaEntity->label}} {{if $a->crudType eq 'U'}}編集{{else}}新規登録{{/if}}</h3>
+<div class="clear"></div>
+</div> <!-- End .content-box-header -->
+
+<div class="content-box-content">
+
+{{include file='admin/parts/message_area.tpl'}}
+
+<form method="post" action="create.html">
+<input type="hidden" name="crudType" value="{{$a->crudType|escape}}" />
+<input type="hidden" name="id" value="{{$a->id|escape}}" />
+<input type="hidden" name="meta_entity_id" value="{{$a->meta_entity_id|escape}}" />
+
+<fieldset>
+<div class="check_list">
+<label for="publish_flg">公開状態<sup title="必須">*</sup></label>
+<ul>{{html_radios name='publish_flg' options=$a->publish_flgOptions() selected=$a->publish_flg assign=cbs}}
+{{foreach item=cb from=$cbs}}
+<li>{{$cb}}</li>
+{{/foreach}}
+</ul>
+<div class="clear"></div>
+</div>
+<p>
+<label for="reserve_date_y">公開開始日</label>
+<img src="{{$a->basePath()}}/resources/images/cal.png" class="calendar" /><input type="text" style="display:none;visibility:hidden;height:0;width:0;" />
+<input type="text" id="publish_start_dt_ar[Year]" name="publish_start_dt_ar[Year]" value="{{$a->publish_start_dt_ar.Year}}" style="display:inline" size="5" maxlength="4" class="text-input" />
+年
+<input type="text" id="publish_start_dt_ar[Month]" name="publish_start_dt_ar[Month]" value="{{$a->publish_start_dt_ar.Month}}" style="display:inline" size="3" maxlength="2" class="text-input" />
+月
+<input type="text" id="publish_start_dt_ar[Day]" name="publish_start_dt_ar[Day]" value="{{$a->publish_start_dt_ar.Day}}" style="display:inline" size="3" maxlength="2" class="text-input" />
+日
+<input type="text" id="publish_start_dt_ar[Hour]" name="publish_start_dt_ar[Hour]" value="{{$a->publish_start_dt_ar.Hour}}" style="display:inline" size="3" maxlength="2" class="text-input" />
+時
+<input type="text" id="publish_start_dt_ar[Minute]" name="publish_start_dt_ar[Minute]" value="{{$a->publish_start_dt_ar.Minute}}" style="display:inline" size="3" maxlength="2" class="text-input" />
+分
+</p>
+<p>
+<label for="reserve_date_y">公開終了日</label>
+<img src="{{$a->basePath()}}/resources/images/cal.png" class="calendar" /><input class="end_dt" type="text" style="display:none;visibility:hidden;height:0;width:0;" />
+<input type="text" id="publish_end_dt_ar[Year]" name="publish_end_dt_ar[Year]" value="{{$a->publish_end_dt_ar.Year}}" style="display:inline" size="5" maxlength="4" class="text-input" />
+年
+<input type="text" id="publish_end_dt_ar[Month]" name="publish_end_dt_ar[Month]" value="{{$a->publish_end_dt_ar.Month}}" style="display:inline" size="3" maxlength="2" class="text-input" />
+月
+<input type="text" id="publish_end_dt_ar[Day]" name="publish_end_dt_ar[Day]" value="{{$a->publish_end_dt_ar.Day}}" style="display:inline" size="3" maxlength="2" class="text-input" />
+日
+<input type="text" id="publish_end_dt_ar[Hour]" name="publish_end_dt_ar[Hour]" value="{{$a->publish_end_dt_ar.Hour}}" style="display:inline" size="3" maxlength="2" class="text-input" />
+時
+<input type="text" id="publish_end_dt_ar[Minute]" name="publish_end_dt_ar[Minute]" value="{{$a->publish_end_dt_ar.Minute}}" style="display:inline" size="3" maxlength="2" class="text-input" />
+分
+</p>
+<p>
+<label for="seq">並び順</label>
+<input type="text" id="seq" name="seq" value="{{$a->seq|escape}}" size="4" class="text-input" />
+</p>
+
+{{foreach from=$a->_record->_metaAttributes item=attr}}{{assign var=pname value=$attr->pname}}
+{{if $attr->data_type eq '1'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+<input type="text" name="{{$pname}}" value="{{$a->$pname|escape}}" class="text-input medium-input" />
+</p>
+{{elseif $attr->data_type eq '2'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+<textarea id="{{$pname}}" name="{{$pname}}" rows="5" class="text-input">{{$a->$pname|escape}}</textarea>
+</p>
+{{elseif $attr->data_type eq '3'}}
+<div class="check_list">
+<label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+<ul>{{html_checkboxes name=$pname options=$attr->getOptions() checked=$a->$pname assign=cbs}}
+{{foreach item=cb from=$cbs}}
+<li>{{$cb}}</li>
+{{/foreach}}
+</ul>
+<div class="clear"></div>
+</div>
+{{elseif $attr->data_type eq '4'}}
+<div class="check_list">
+<label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+<ul>{{html_radios name=$pname options=$attr->getOptions() checked=$a->$pname assign=cbs}}
+{{foreach item=cb from=$cbs}}
+<li>{{$cb}}</li>
+{{/foreach}}
+</ul>
+<div class="clear"></div>
+</div>
+{{elseif $attr->data_type eq '5'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+<select name="{{$pname}}" id="{{$pname}}">
+<option value=""></option>
+{{html_options options=$attr->getOptions() selected=$a->$pname}}
+</select>
+</p>
+{{elseif $attr->data_type eq '6'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+<select name="{{$pname}}[]" id="{{$pname}}" multiple="multiple" size="5">
+{{html_options options=$attr->getOptions() selected=$a->$pname}}
+</select>
+</p>
+{{elseif $attr->data_type eq '7'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+{{include file='common/fileupload.tpl' n=$pname}}
+</p>
+<div class="clear" />
+{{elseif $attr->data_type eq '8'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+<select name="{{$pname}}" id="{{$pname}}">
+<option value=""></option>
+{{html_options options=$attr->getRefOptions() selected=$a->$pname}}
+</select>
+</p>
+{{elseif $attr->data_type eq '9'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+<div id="{{$pname}}">{{$a->$pname}}</div>
+<script>$('#{{$pname}}').elrte(L.elrte_opts);</script>
+</p>
+{{elseif $attr->data_type eq '10'}}
+<p>
+<label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+<input type="text" name="{{$pname}}" value="{{$a->$pname|escape}}" class="text-input medium-input fmopen" />
+<a class="button fmclear" href="#">クリア</a>
+</p>
+{{/if}}
+{{/foreach}}
+<p>
+<input type="submit" name="action:doRegist" value="登録する" class="button" onclick="return confirm('{{$a->_record->_metaEntity->label}}を登録します。よろしいですか？');" />
+<input type="button" name="doBack" value="戻る" class="button button-back" onclick="location.href='list.html?meta_entity_id={{$a->meta_entity_id}}&action:doBack=true';" />
+</p>
+</fieldset>
+</form>
+
+</div> <!-- End .content-box-content -->
+</div> <!-- End .content-box -->
+
+<!-- #footer -->
+{{include file='admin/parts/footer.html'}}
+
+</div> <!-- End #main-content -->
+</div></body>
+</html>
