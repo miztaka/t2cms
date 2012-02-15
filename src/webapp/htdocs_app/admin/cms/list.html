@@ -205,5 +205,9 @@ td { vertical-align: middle; }
 </select>
 </p>
 </div>
+
+{{assign var=plugin_file value="`$smarty.const.MODULE_DIR`/admin/cms/plugin/`$a->_record->_metaEntity->pname`_list.html"}}
+{{if $plugin_file|@file_exists}}{{include file=$plugin_file}}{{/if}}
+
 </body>
 </html>
