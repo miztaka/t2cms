@@ -45,6 +45,14 @@ L.elrte_opts = {
         })
     }
 };
+L.preview_resourse = function(i) {
+    var div = i.prev();
+    div.html("");
+    var path = i.val();
+    if (path.match(/\.(jpg|gif|png)$/i)) {
+        div.append('<img src="' + path + '" width="120" />');
+    }
+};
 
 $(function() {
     // ファイルマネージャ
@@ -57,12 +65,14 @@ $(function() {
 　　　　    closeOnEditorCallback : true,
 　　　　    editorCallback : function(url) {
 　　　　        jq.val(url);
+　　　　        L.preview_resourse(jq);
 　　　　    }
         });
     });
     $(".fmclear").click(function(e) {
         e.preventDefault();
         $(this).prev().val('');
+        L.preview_resourse($(this).prev());
     });
     
     // ファイルアップロード
@@ -122,6 +132,11 @@ $(function() {
     $('.calendar').click(function() {
         $(this).next().focus();
     });
+
+    // リソースのプレビュー
+    $('input.fmopen').each(function() {
+        L.preview_resourse($(this));
+    });    
 });
 //]]>
 </script>
@@ -260,6 +275,7 @@ $(function() {
 {{elseif $attr->data_type eq '10'}}
 <p>
 <label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
+<span></span>
 <input type="text" name="{{$pname}}" value="{{$a->$pname|escape}}" class="text-input medium-input fmopen" />
 <a class="button fmclear" href="#">クリア</a>
 </p>

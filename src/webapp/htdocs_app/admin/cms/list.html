@@ -162,12 +162,15 @@ td { vertical-align: middle; }
 {{foreach from=$a->searchResult item=p}}
 <tr>
 {{foreach from=$a->_list_columns key=k item=col}}
+{{assign var=attr value=$a->_record->getAttributeByPname($k)}}
 {{if $k eq 'publish_flg'}}
 <td>{{$p->publish_flg|label:$a->publish_flgOptions()}}</td>
 {{elseif $k eq 'publish_start_dt' || $k eq 'publish_end_dt' || $k eq 'create_time'}}
 <td>{{$p->$k|date_format:$a->datetimeformat()}}</td>
 {{elseif $k|@in_array:$p->getImageFieldNames()}}
 <td>{{if $p->label($k)}}<img src="{{$a->basePath()}}/upload/{{$p->label($k)}}" width="50" />{{else}}&nbsp;{{/if}}</td>
+{{elseif $attr && $attr->data_type eq 10}}
+<td>{{if $a->isImageResource($p->$k)}}<img src="{{$p->$k}}" width=50" />&nbsp;{{/if}}<a href="{{$p->$k}}" target="_blank">{{$p->$k}}</a></td>
 {{else}}
 <td>{{$p->label($k)|escape}}</td>
 {{/if}}

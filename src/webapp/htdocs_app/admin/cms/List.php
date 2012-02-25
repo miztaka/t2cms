@@ -343,6 +343,16 @@ __all:
         $this->urls = $urls;
         return "admin/cms/previewlist.html";
     }
+    
+    /**
+     * リソースが画像かどうか？
+     */
+    public function isImageResource($val) {
+        if (!$val) {
+            return false;
+        }
+        return preg_match("/(jpg|gif|png)$/i", $val);
+    }
 
 }
 

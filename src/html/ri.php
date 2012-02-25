@@ -3,7 +3,7 @@
  * 画像をリサイズして表示
  */
 $base = dirname(__FILE__);
-$libs = dirname(dirname(__FILE__))."/libs";
+$libs = dirname(dirname(__FILE__))."/webapp/libs";
 $u = @$_GET['u']; // ファイルパス
 $w = @$_GET['w']; // width
 $h = @$_GET['h']; // height
