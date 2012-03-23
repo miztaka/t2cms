@@ -269,7 +269,7 @@ $(function() {
 {{elseif $attr->data_type eq '9'}}
 <p>
 <label for="{{$pname}}">{{$attr->label}}{{if $attr->require_flg}}<sup title="必須">*</sup>{{/if}}</label>
-<div id="{{$pname}}">{{$a->$pname}}</div>
+<textarea id="{{$pname}}">{{$a->$pname}}</textarea>
 <script>$('#{{$pname}}').elrte(L.elrte_opts);</script>
 </p>
 {{elseif $attr->data_type eq '10'}}
@@ -283,7 +283,7 @@ $(function() {
 {{/foreach}}
 <p>
 <input type="submit" name="action:doRegist" value="登録する" class="button" onclick="return confirm('{{$a->_record->_metaEntity->label}}を登録します。よろしいですか？');" />
-<input type="button" name="doBack" value="戻る" class="button button-back" onclick="location.href='list.html?meta_entity_id={{$a->meta_entity_id}}&action:doBack=true';" />
+<input type="button" name="doBack" value="戻る" class="button button-back" onclick="window.location.href='list.html?meta_entity_id={{$a->meta_entity_id}}&action:doBack=true';" />
 </p>
 </fieldset>
 </form>

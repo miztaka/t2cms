@@ -211,6 +211,9 @@ __all:
             } elseif (Teeple_Util::endsWith($name, "_like")) {
                 $op = 'contains';
                 $prop = substr($name, 0, strlen($name)-5);
+            } elseif (Teeple_Util::endsWith($name, "_in")) {
+                $op = 'in';
+                $prop = substr($name, 0, strlen($name)-3);
             }
             if ($op == NULL) {
                 continue;

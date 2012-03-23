@@ -1,9 +1,12 @@
 RewriteEngine on
 RewriteBase /
 
+RewriteRule ^$ index.html [QSA]
+RewriteRule ^(.*)/$ $1/index.html [QSA]
+
 RewriteCond %{REQUEST_URI} (\.html|/)$
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ teeple_controller.php/$1 [L]
 
 Options +Includes +FollowSymLinks
