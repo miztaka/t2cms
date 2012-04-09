@@ -125,6 +125,10 @@ class KetaiConverter {
 		
 		// istyleの変換
 		$output = KetaiConverter::convert_istyle($output, $agent);
+		
+        // doctypeの変換
+        //$output = KetaiConverter::convert_doctype($output, $agent);
+		
 		return $output;
 	}
 
@@ -275,6 +279,26 @@ class KetaiConverter {
         return $output;
     }
     
+    function convert_doctype($input, $agent)
+    {
+        $doctype = "";
+        $carrier = KetaiConverter::getCarrier($agent);
+        switch ($carrier) {
+            case 'DoCoMo':
+                $doctype = '<!DOCTYPE html PUBLIC "-//i-mode group (ja)//DTD XHTML i-XHTML(Locale/Ver.=ja/2.0) 1.0//EN" "i-xhtml_4ja_10.dtd">';
+                break;
+            case 'SoftBank':
+                $doctype = '<!DOCTYPE html PUBLIC "-//J-PHONE//DTD XHTML Basic 1.0 Plus//EN" "xhtml-basic10-plus.dtd">';
+                break;
+            case 'EZweb':
+                $doctype = '<!DOCTYPE html PUBLIC "-//OPENWAVE//DTD XHTML 1.0//EN" "http://www.openwave.com/DTD/xhtml-basic.dtd">';
+                break;
+            default:
+                return $input;
+        }
+        return str_replace('<!-- DOCTYPE_REPLACE -->', $doctype, $input);
+    }
+        
     /**
      * フォームのactionにguid=ONを付加します。
      * @param $input

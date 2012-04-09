@@ -70,8 +70,8 @@ jQuery(function($){
 <thead>
 <tr>
 <th scope="col" class="nowrap">状態</th>
-<th scope="col" class="nowrap">ページ名<br/><input type="text" name="srch_name" value="{{$a->srch_name|escape}}" class="text-input" size="35" /></th>
-<th scope="col" class="nowrap">URL<br /><input type="text" name="srch_url" value="{{$a->srch_url|escape}}" class="text-input" size="35" /></th>
+<th scope="col" class="nowrap">ページ名<br/><input type="text" name="srch_name" value="{{$a->srch_name|escape}}" class="text-input" /></th>
+<th scope="col" class="nowrap">URL<br /><input type="text" name="srch_url" value="{{$a->srch_url|escape}}" class="text-input" /></th>
 <th scope="col" class="nowrap">種類</th>
 <th scope="col" class="nowrap">オブジェクト<br/>
 <select name="srch_meta_entity_id" class="text-input">
@@ -99,7 +99,7 @@ jQuery(function($){
 <td class="nowrap">{{$page->url|escape}}{{if $page->page_type eq '1'}}(/レコードID).html{{else}}.html{{/if}}</td>
 <td class="nowrap">{{$page->page_type|label:$a->getOptions('Page','page_type')}}</td>
 <td>{{$page->meta_entity_id|label:$a->meta_entity_idOptions()}}</td>
-<td>
+<td style="width:140px">
 <a class="buttonLink" href="create.html?id={{$page->id}}">編集</a>
 <a class="buttonLink" href="list.html?action:doDelete=true&id={{$page->id}}" onclick="return confirm('ページを削除します。よろしいですか？');">削除</a>
 <a class="buttonLink" href="{{$a->appPath()}}/{{$page->url}}.html?preview=1" target="_blank">プレビュー</a>

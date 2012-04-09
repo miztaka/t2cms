@@ -228,6 +228,27 @@ __all:
                 $ny = $value + 1;
                 $query->ge("publish_start_dt", "{$value}-01-01 00:00");
                 $query->lt("publish_start_dt", "{$ny}-01-01 00:00");
+            } elseif ("month" == $prop && preg_match('/^\d{6}$/', $value)) {
+                if ($value == '999999') {
+                    $y = date('Y');
+                    $m = date('m');
+                    $this->month_eq = $y.$m;
+                } else {
+                    $y = substr($value, 0, 4);
+                    $m = intval(substr($value, 4, 2));
+                }
+                if (checkdate($m, 1, $y)) {
+                    $thismonth = sprintf("%04d-%02d-01 00:00:00", $y, $m);
+                    if ($m == 12) {
+                        $y+=1;
+                        $m = 1;
+                    } else {
+                        $m+=1;
+                    }
+                    $nextmonth = sprintf("%04d-%02d-01 00:00:00", $y, $m);
+                }
+                $query->ge("publish_start_dt", $thismonth);
+                $query->lt("publish_start_dt", $nextmonth);
             }
         }
         return;
