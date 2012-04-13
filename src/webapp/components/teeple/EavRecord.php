@@ -334,13 +334,16 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
 	 */
 	public function insert() {
 	    
-	    $clsname = "Plugin_Object_{$this->_metaEntity->pname}";
-	    if (class_exists($clsname)) {
-	        $plugin = new $clsname();
-	        if (method_exists($plugin, 'beforeInsert')) {
-	            $plugin->beforeInsert($this);
-	        }
-	    }
+	    $plugin = null;
+        $clsname = "Plugin_Object_{$this->_metaEntity->pname}";
+        if (class_exists($clsname)) {
+            $plugin = new $clsname();
+        }
+        
+	    // beforeInsert
+        if ($plugin != null & method_exists($plugin, 'beforeInsert')) {
+            $plugin->beforeInsert($this);
+        }        
 	    
 	    // meta_record作成
         $record = Entity_MetaRecord::get();
@@ -358,6 +361,12 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
             $metaValue->insert();
         }
         $this->id = $record->id;
+        
+	    // afterInsert
+        if ($plugin != null & method_exists($plugin, 'afterInsert')) {
+            $plugin->afterInsert($this);
+        }
+        
         return true;
     }
     
@@ -366,13 +375,12 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
      */
     public function update() {
         
+        $plugin = null;
         $clsname = "Plugin_Object_{$this->_metaEntity->pname}";
         if (class_exists($clsname)) {
             $plugin = new $clsname();
-            if (method_exists($plugin, 'beforeUpdate')) {
-                $plugin->beforeUpdate($this);
-            }
         }
+        
         if (Teeple_Util::isBlank($this->_bean->id)) {
             throw new Exception("IDがセットされていません。");
         }
@@ -381,6 +389,12 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
         if ($record == null) {
             throw new Exception("レコードが見つかりません。");
         }
+        
+        // beforeUpdate
+        if ($plugin != null & method_exists($plugin, 'beforeUpdate')) {
+            $plugin->beforeUpdate($this);
+        }
+        
         $record->convert2Entity($this->_bean);
         $record->update();
         
@@ -408,6 +422,12 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
                 }
             }
         }
+        
+        // afterUpdate
+        if ($plugin != null & method_exists($plugin, 'afterUpdate')) {
+            $plugin->afterUpdate($this);
+        }
+        
         return true;
     }
     
