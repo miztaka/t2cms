@@ -161,7 +161,8 @@ publish_end_dt_ar:
         $record->update();
         
         $this->request->addNotification("レコードを更新しました。");
-        return $this->redirect(Admin_Cms_List::actionName());
+        //return $this->redirect(Admin_Cms_List::actionName());
+        return $this->back2list("update");
     }
     
     /**
@@ -184,6 +185,7 @@ publish_end_dt_ar:
         }
         $this->request->addNotification("レコードを作成しました。");
         return $this->redirect(Admin_Cms_List::actionName());
+        return $this->back2list("create");
     }
     
     /**
@@ -195,6 +197,11 @@ publish_end_dt_ar:
             $this->_record = new Teeple_EavRecord($this->meta_entity_id);
         }
         return NULL;
+    }
+    
+    protected function back2list($done) {
+        $url = "list.html?meta_entity_id={$this->meta_entity_id}&action:doBack=true&_done={$done}";
+        return "location: $url";
     }
 
 }

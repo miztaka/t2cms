@@ -58,6 +58,13 @@ __all:
      */
     public function doBack() {
         
+        $done = $this->request->getParameter("_done");
+        if ($done == 'create') {
+            $this->request->addNotification("レコードを作成しました。");
+        } elseif ($done == 'update') {
+            $this->request->addNotification("レコードを更新しました。");
+        }
+        
         $searchConds = $this->session->getParameter($this->session_key);
         if (! is_object($searchConds)) {
             return $this->doSearch();
