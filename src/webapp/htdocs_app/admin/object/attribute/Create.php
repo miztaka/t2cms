@@ -168,11 +168,15 @@ __all:
         }
         
         // options の必須チェック
-        if ($this->data_type == Entity_MetaAttribute::DATA_TYPE_CHECK || $this->data_type == Entity_MetaAttribute::DATA_TYPE_MULTISELECT) {
-            if (Teeple_Util::isBlank($this->options)) {
-                $this->request->addErrorMessage("選択肢を１つ以上設定してください。");
-                return false;
-            }
+        switch ($this->data_type) {
+            case Entity_MetaAttribute::DATA_TYPE_CHECK:
+            case Entity_MetaAttribute::DATA_TYPE_RADIO:
+            case Entity_MetaAttribute::DATA_TYPE_SELECT:
+            case Entity_MetaAttribute::DATA_TYPE_MULTISELECT:
+                if (Teeple_Util::isBlank($this->options)) {
+                    $this->request->addErrorMessage("選択肢を１つ以上設定してください。");
+                    return false;
+                }
         }
         
         // ref の必須チェック

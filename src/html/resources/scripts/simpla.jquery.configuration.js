@@ -52,10 +52,13 @@ $(document).ready(function(){
 		$('.content-box-content div.default-tab').show(); // Show the div with class "default-tab"
 		
 		$('.content-box ul.content-box-tabs li a').click( // When a tab is clicked...
-			function() { 
+			function() {
+				var currentTab = $(this).attr('href'); // Set variable "currentTab" to the value of href of clicked tab
+				if (currentTab.indexOf('#') != 0) {
+					return true;
+				}
 				$(this).parent().siblings().find("a").removeClass('current'); // Remove "current" class from all tabs
 				$(this).addClass('current'); // Add class "current" to clicked tab
-				var currentTab = $(this).attr('href'); // Set variable "currentTab" to the value of href of clicked tab
 				$(currentTab).siblings().hide(); // Hide all content divs
 				$(currentTab).show(); // Show the content div with the id equal to the id of clicked tab
 				return false; 

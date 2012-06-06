@@ -1,0 +1,6 @@
+RewriteEngine on
+RewriteBase /icache
+
+RewriteCond %{REQUEST_URI} (\.jpg|\.png|\.gif)$ [NC]
+RewriteCond %{REQUEST_URI} !(^/icache/icache.php/.*$)
+RewriteRule ^(.*)$ icache.php/$1 [L]

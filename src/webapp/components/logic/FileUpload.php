@@ -107,7 +107,7 @@ class Logic_FileUpload
             $realname .= "_". time() .".". $pathinfo['extension'];
             if (! copy(UPLOAD_TMP_DIR."/".$tmpname, UPLOAD_DIR."/".$realname)) {
                 $this->log->error("ファイルのコピーに失敗しました。$tmpname -> $realname");
-                $action->request->addErrorMessage('画像ファイルの更新に失敗しました。');
+                $this->request->addErrorMessage('画像ファイルの更新に失敗しました。');
                 break;
             }
             $this->log->debug("ファイルのコピー $tmpname -> $realname");

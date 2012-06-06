@@ -4,11 +4,33 @@
 <title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
 {{include file='admin/parts/common_head.html'}}
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/codemirror/lib/codemirror.css" />
+<script src="{{$a->basePath()}}/resources/codemirror/lib/codemirror.js"></script>
+<script src="{{$a->basePath()}}/resources/codemirror/mode/xml/xml.js"></script>
+<script src="{{$a->basePath()}}/resources/codemirror/mode/javascript/javascript.js"></script>
+<script src="{{$a->basePath()}}/resources/codemirror/mode/css/css.js"></script>
+<script src="{{$a->basePath()}}/resources/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<!-- <script src="{{$a->basePath()}}/resources/codemirror/mode/smarty/smarty.js"></script> -->
+<script src="{{$a->basePath()}}/resources/codemirror/keymap/emacs.js"></script>
+<style>
+.CodeMirror { border: 1px solid #ccc; }
+.CodeMirror-scroll { height: 400px; }
+</style>
 <script language="JavaScript" type="text/javascript">
+var L = {} || L;
 jQuery(function($) {
     if (parseInt($('input[name="page_type"]').val(), 10) == 3) {
         $('#tpl_choice').show();
     }
+    // codemirror
+    L.editor = CodeMirror.fromTextArea(document.getElementById("editArea"), {
+        indentUnit: 0,
+        smartIndent: false,
+        //keyMap: 'emacs',
+        lineWrapping: true,
+        mode: "text/html", 
+        tabMode: "indent"
+    });
 });
 </script>
 </head>
@@ -18,7 +40,9 @@ jQuery(function($) {
 
 <div id="main-content"> <!-- Main Content Section with everything -->
 
+<div class="main-content-header">
 <h2>ページテンプレートの編集</h2>
+</div>
 
 {{include file='admin/parts/message_area.tpl'}}
 
@@ -28,21 +52,37 @@ jQuery(function($) {
 <input type="hidden" name="template_path" value="{{$a->template_path|escape}}" />
 <input type="hidden" name="encoding" value="{{$a->encoding|escape}}" />
 <input type="hidden" name="page_type" value="{{$a->page_type|escape}}" />
-<div id="tpl_choice" style="display:none;">
-<a href="?id={{$a->id}}">フォームページを編集...</a>&nbsp;&nbsp;
-<a href="?id={{$a->id}}&tpl=confirm">確認ページを編集...</a>
-<a href="?id={{$a->id}}&tpl=complete">完了ページを編集...</a>
+
+<div class="content-box">
+
+<div class="content-box-header">
+<h3 style="cursor: s-resize;">{{$a->page_type|label:$a->getOptions('Page','page_type')}}のテンプレート</h3>
+{{if $a->page_type == 3}}
+<ul class="content-box-tabs">
+<li><a class="{{if ! $a->tpl}}current{{/if}}" href="template.html?id={{$a->id}}">フォームページを編集...</a></li>
+<li><a class="{{if $a->tpl eq 'confirm'}}current{{/if}}" href="template.html?id={{$a->id}}&tpl=confirm">確認ページを編集...</a></li>
+<li><a class="{{if $a->tpl eq 'complete'}}current{{/if}}" href="template.html?id={{$a->id}}&tpl=complete">完了ページを編集...</a></li>
+</ul>
+{{/if}}
+<div class="clear"></div>
 </div>
+
+<div class="content-box-content"> 
 <fieldset>
 <p>
-<label>テンプレートファイル名 {{$a->template_path}}</label>
-<textarea name="template" class="text-input" rows="50">{{$a->template|escape}}</textarea>
+<label>テンプレートファイル名</label>
+<span class="static">{{$a->template_path}}</span>
 </p>
+<div>
+<textarea id="editArea" name="template" class="text-input" rows="50">{{$a->template|escape}}</textarea>
+</div>
 <p>
 <input type="submit" name="action:doRegist" value="更新する" class="button" onclick="return confirm('テンプレートを更新します。よろしいですか？');" />
 <input type="button" name="doBack" value="戻る" class="button button-back" onclick="location.href='list.html?action:doBack=true';" />
 </p>
 </fieldset>
+</div>
+</div>
 </form>
 
 <!-- #footer -->
