@@ -19,9 +19,7 @@
 <script language="JavaScript" type="text/javascript">
 var L = {} || L;
 jQuery(function($) {
-    if (parseInt($('input[name="page_type"]').val(), 10) == 3) {
-        $('#tpl_choice').show();
-    }
+  if (! $.browser.msie) {
     // codemirror
     L.editor = CodeMirror.fromTextArea(document.getElementById("editArea"), {
         indentUnit: 0,
@@ -31,6 +29,7 @@ jQuery(function($) {
         mode: "text/html", 
         tabMode: "indent"
     });
+  }
 });
 </script>
 </head>
