@@ -184,7 +184,7 @@ publish_end_dt_ar:
             $record->update();
         }
         $this->request->addNotification("レコードを作成しました。");
-        return $this->redirect(Admin_Cms_List::actionName());
+        //return $this->redirect(Admin_Cms_List::actionName());
         return $this->back2list("create");
     }
     

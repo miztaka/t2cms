@@ -1181,10 +1181,10 @@ class Teeple_ActiveRecord
         
         $columns = $this->_getColumns(get_class($this));
         foreach($columns as $column) {
-            if (@isset($this->$column)) {
+            //if (@isset($this->$column)) {
                 $prop = array_key_exists($column, $colmap) ? $colmap[$column] : $column;
                 $obj->$prop = $this->$column;
-            }
+            //}
         }
         return;
     }

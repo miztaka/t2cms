@@ -43,7 +43,7 @@ __all:
   trim: {}
     ';
     
-    private $checkbox_fields = array('mobile_flg');
+    private $checkbox_fields = array('mobile_flg', 'nosave_flg');
 
     /**
      * 標準で実行されるメソッドです。

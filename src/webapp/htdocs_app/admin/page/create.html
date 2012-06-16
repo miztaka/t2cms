@@ -129,6 +129,13 @@ jQuery(function($) {
 <small>投稿があった際に通知されます。</small>
 </p>
 <div class="check_list form_page">
+<label>データ登録</label>
+<ul>
+<li><label><input type="checkbox" name="nosave_flg" value="1" {{if $a->nosave_flg eq '1'}}checked="checked"{{/if}} />メール送信のみでデータを保存しない</label></li>
+</ul>
+<div class="clear"></div>
+</div>
+<div class="check_list form_page">
 <label>投稿データの公開状態</label>
 {{html_radios name='default_publish_flg' options=$a->publish_flgOptions() selected=$a->default_publish_flg assign=cbs}}
 <ul>{{foreach item=cb from=$cbs}}

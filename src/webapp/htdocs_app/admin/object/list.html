@@ -59,6 +59,7 @@ jQuery(function($){
 <tfoot>
 <tr>
 <td colspan="4">
+<input type="submit" name="action:doExport" value="オブジェクト設定をエクスポート" class="button" />
 <div id="pagination" class="pagination float_right"></div>
 <div class="clear"></div>
 </td>
@@ -81,6 +82,14 @@ jQuery(function($){
 {{/if}}
 </table>
 </form>
+
+<div>
+<form method="post" action="list.html" enctype="multipart/form-data">
+<input type="file" name="import_file" />
+<input type="submit" name="action:doImport" value="オブジェクト設定をインポート" class="button" />
+</form>
+</div>
+<div class="clear"></div>
 
 <!-- #footer -->
 {{include file='admin/parts/footer.html'}}

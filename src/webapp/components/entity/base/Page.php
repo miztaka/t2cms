@@ -63,6 +63,7 @@ class Entity_Base_Page extends Teeple_ActiveRecord
     public $notify_email;
     public $default_publish_flg;
     public $mobile_flg;
+    public $nosave_flg;
     
     
     /**

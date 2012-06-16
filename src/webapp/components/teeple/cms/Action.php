@@ -307,7 +307,7 @@ __all:
         } else {
             $this->_record->publish_flg = 0;
         }
-        $this->_record->insert();
+        $this->_record->insert($this->_pageInfo->nosave_flg == 1);
         /*
         $imageFields = $this->_record->getImageFieldNames();
         if ($imageFields && !empty($imageFields)) {

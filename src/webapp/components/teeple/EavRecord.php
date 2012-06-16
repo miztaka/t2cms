@@ -331,8 +331,9 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
 
 	/**
 	 * レコードを作成します。
+	 * @param bool $nosave TRUEのときは実際にはデータを登録しない。(beforeInsert,afterInsertは実行される)
 	 */
-	public function insert() {
+	public function insert($nosave=FALSE) {
 	    
 	    $plugin = null;
         $clsname = "Plugin_Object_{$this->_metaEntity->pname}";
@@ -343,24 +344,26 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
 	    // beforeInsert
         if ($plugin != null & method_exists($plugin, 'beforeInsert')) {
             $plugin->beforeInsert($this);
-        }        
-	    
-	    // meta_record作成
-        $record = Entity_MetaRecord::get();
-        $record->convert2Entity($this->_bean);
-        $record->meta_entity_id = $this->_metaEntity->id;
-        $record->insert();
-        
-        // meta_value作成
-        foreach ($this->_metaAttributes as $attr) {
-            $pname = $attr->pname;
-            $metaValue = Entity_MetaValue::get();
-            $metaValue->meta_record_id = $record->id;
-            $metaValue->meta_attribute_id = $attr->id;
-            $metaValue->value = $this->_bean->$pname;
-            $metaValue->insert();
         }
-        $this->id = $record->id;
+	    
+        if (! $nosave) {
+            // meta_record作成
+            $record = Entity_MetaRecord::get();
+            $record->convert2Entity($this->_bean);
+            $record->meta_entity_id = $this->_metaEntity->id;
+            $record->insert();
+        
+            // meta_value作成
+            foreach ($this->_metaAttributes as $attr) {
+                $pname = $attr->pname;
+                $metaValue = Entity_MetaValue::get();
+                $metaValue->meta_record_id = $record->id;
+                $metaValue->meta_attribute_id = $attr->id;
+                $metaValue->value = $this->_bean->$pname;
+                $metaValue->insert();
+            }
+            $this->id = $record->id;
+        }
         
 	    // afterInsert
         if ($plugin != null & method_exists($plugin, 'afterInsert')) {
