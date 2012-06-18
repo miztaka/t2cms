@@ -225,6 +225,10 @@ __all:
             } elseif (in_array($prop, Teeple_EavRecord::$_SELECT_FIELD)) {
                 $query->$op($prop, $value);
             } elseif ("year" == $prop && preg_match('/^\d{4}$/', $value)) {
+                if ($value == 9999) {
+                    $value = date('Y');
+                    $this->year_eq = $value;
+                }
                 $ny = $value + 1;
                 $query->ge("publish_start_dt", "{$value}-01-01 00:00");
                 $query->lt("publish_start_dt", "{$ny}-01-01 00:00");
@@ -320,6 +324,11 @@ __all:
             $this->sendNotifyEmail();
         }
         
+        // 自動返信メールの送信
+        if (! Teeple_Util::isBlank($this->_pageInfo->auto_reply_subject) && ! Teeple_Util::isBlank($this->_record->email)) {
+            $this->sendAutoReply();
+        }
+        
         // 完了ページへリダイレクト (コンバージョンを取得できるようにURLを変える)
         $act = str_replace("/", "_", $this->_pageInfo->url);
         $act .= "-complete";
@@ -375,7 +384,28 @@ __all:
             'page_name' => $this->_pageInfo->name,
             'form_data' => implode("\n\n", $form_data)
         );
-        QdmailFactory::instance()->sendTextEmail($data, $subject, $body);
+        if (! QdmailFactory::instance()->sendTextEmail($data, $subject, $body)) {
+            $this->log->error("通知メールの送信に失敗しました。");
+        }
+        return;
+    }
+    
+    /**
+     * 自動返信メールを送信します。
+     */
+    protected function sendAutoReply() {
+        
+        $subject = $this->_pageInfo->auto_reply_subject;
+        $body = $this->_pageInfo->auto_reply;
+        $data = array();
+        foreach ($this->_record->_metaAttributes as $attr) {
+            $pname = $attr->pname;
+            $data[$pname] = $this->_record->label($pname);
+        }
+        $data['mail'] = $this->_record->email;
+        if (! QdmailFactory::instance()->sendTextEmail($data, $subject, $body)) {
+            $this->log->error("自動返信メールの送信に失敗しました。");
+        }
         return;
     }
     

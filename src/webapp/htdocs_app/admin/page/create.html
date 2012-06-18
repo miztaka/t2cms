@@ -135,6 +135,12 @@ jQuery(function($) {
 </ul>
 <div class="clear"></div>
 </div>
+<p class="form_page">
+<label>自動返信メール</label>
+<input type="text" name="auto_reply_subject" value="{{$a->auto_reply_subject|escape}}" class="text-input large-input" />
+<textarea name="auto_reply" class="text-input textarea" rows="10">{{$a->auto_reply|escape}}</textarea>
+<small>※自動返信メールを送信したい場合はタイトルと文面を入力してください。メールアドレスは参照名を"email"としてください。</small>
+</p>
 <div class="check_list form_page">
 <label>投稿データの公開状態</label>
 {{html_radios name='default_publish_flg' options=$a->publish_flgOptions() selected=$a->default_publish_flg assign=cbs}}

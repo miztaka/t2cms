@@ -53,6 +53,14 @@ class Teeple_Cms_FormValidator {
     }
     
     /**
+     * @var Teeple_Validator_Email
+     */
+    private $emailValidator;
+    public function setComponent_Teeple_Validator_Email($c) {
+        $this->emailValidator = $c;
+    }
+    
+    /**
      * @var Teeple_Resource
      */
     private $resource;
@@ -80,7 +88,11 @@ class Teeple_Cms_FormValidator {
                 $this->requireCheck($attr, $action);
             }
             if (! Teeple_Util::isBlank($attr->validation)) {
-                $this->maskCheck($attr, $action);
+                if ($attr->validation == '/EMAIL/') {
+                    $this->emailCheck($attr, $action);
+                } else {
+                    $this->maskCheck($attr, $action);
+                }
             }
         }
         
@@ -128,6 +140,22 @@ class Teeple_Cms_FormValidator {
         $this->maskValidator->mask = $regex;
         if (! $this->maskValidator->validate($action, $pname)) {
             $this->addError($attr, 'mask');
+        }
+        return;
+    }
+    
+    /**
+     * メールアドレスのチェックを行ないます。
+     * @param Entity_MetaAttribute $attr
+     * @param Teeple_ActionBase $action
+     */
+    private function emailCheck($attr, $action) {
+        $pname = $attr->pname;
+        if (Teeple_Util::isBlank($action->$pname)) {
+            return;
+        }
+        if (! $this->emailValidator->validate($action, $pname)) {
+            $this->addError($attr, 'email');
         }
         return;
     }

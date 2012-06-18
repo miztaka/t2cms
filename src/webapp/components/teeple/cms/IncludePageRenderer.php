@@ -56,6 +56,7 @@ class Teeple_Cms_IncludePageRenderer {
         $container = Teeple_Container::getInstance();
         $session = $container->getComponent('Teeple_Session');
         $request = $container->getPrototype('Teeple_Request'); // 新しいリクエストを作る
+        $this->resetRequest($request);
         if (count($this->_params)) {
             foreach ($this->_params as $key => $val) {
                 $request->setParameter($key, $val);
@@ -135,6 +136,21 @@ class Teeple_Cms_IncludePageRenderer {
             ->eq('delete_flg', 0)
             ->find();
         return $page;
+    }
+    
+    /**
+     * リクエストパラメータをリセットする
+     * @param Teeple_Request $request
+     */
+    protected function resetRequest($request) {
+        
+        $buf = $request->getParameters();
+        if (is_array($buf)) {
+            foreach ($buf as $key => $val) {
+                $request->removeParameter($key);
+            }
+        }
+        return;
     }
     
 }
