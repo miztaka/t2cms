@@ -52,7 +52,7 @@ class Teeple_Pager {
         
     /** 全ページ数 */
     public function numOfPages() {
-        $div = $this->total / $this->limit;
+        $div = floor($this->total / $this->limit);
         $amari = $this->total % $this->limit;
         if ($amari > 0) {
             $div += 1;

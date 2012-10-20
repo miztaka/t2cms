@@ -11,6 +11,8 @@ class ImageCache {
     
     public function execute() {
         
+        ob_start();
+        
         $base = dirname(__FILE__);
         $documentRoot = dirname($base);
         $libs = dirname($documentRoot)."/webapp/libs";
@@ -21,6 +23,10 @@ class ImageCache {
         $path = trim($path_orig, "/");
         list($param, $path) = explode("/", $path, 2);
         $this->origImagePath = realpath($documentRoot."/".$path);
+        if ($this->origImagePath === FALSE) {
+            $this->exit404("{$path} is not found");
+            return;
+        }
 
         $w = self::INFINITE;
         $h = self::INFINITE;
@@ -66,9 +72,12 @@ class ImageCache {
                 return;
             }
         } else {
-            if (! @mkdir(dirname($cachePath), 0775, true)) {
-                $this->exit404("mkdir failed. path=". $cachePath);
-                return;
+            $dir = dirname($cachePath);
+            if (! file_exists($dir)) {
+                if (! @mkdir($dir, 0775, true)) {
+                    $this->exit404("mkdir failed. path=". $dir);
+                    return;
+                }
             }
         }
         
@@ -82,7 +91,8 @@ class ImageCache {
     }
     
     private function exit404($msg=null) {
-        header("HTTP/1.1 404 Not Found");
+        @ob_end_clean();
+        header("HTTP/1.0 404 Not Found");
         if ($msg) {
             print($msg);
         }
@@ -103,15 +113,18 @@ class ImageCache {
             return false;
         }
         
+        /*
         // not modified
         if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && 
             strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $cacheStat['mtime']) {
             header('HTTP/1.0 304 Not Modified');
             return true;
         }
+        */
         
         // from cache file
         $this->sendImageFile($cachePath, $cacheStat);
+        return true;
     }
     
     /**
@@ -120,15 +133,29 @@ class ImageCache {
      * @param unknown_type $stat
      */
     private function sendImageFile($cachePath, $stat=null) {
+        @ob_end_clean();
         if (! $stat) {
-            $stat = stat($cachePath);
+            $stat = @stat($cachePath);
         }
         $img = new Image($cachePath);
         header('Content-Type: image/'.($img->output_type ? $img->output_type : $img->type));
-        header("Content-Length: ".$stat['size']);
+        
+        // not modified
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && 
+            strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $stat['mtime']) {
+            header('HTTP/1.0 304 Not Modified');
+            return;
+        }
+        
+        //header("Content-Length: ".$stat['size']);
+        header("Content-Length: ".filesize($cachePath));
         //header("Last-Modified: ". gmdate('D, d M Y H:i:s T', $stat['mtime']));
         header("Last-Modified: ". gmdate('D, d M Y H:i:s T', time())); // TODO readfileがmtimeを更新してしまうようなので。。
-        readfile($cachePath);
+        $fp = fopen($cachePath, "rb");
+        @ob_clean();
+        @flush();
+        fpassthru($fp);
+        //readfile($cachePath);
         return;
     }
     

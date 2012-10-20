@@ -6,10 +6,10 @@
 {{include file='admin/parts/common_head.html'}}
 <script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/jquery.upload-1.0.0.js"></script>
 <!-- elrte WYSIWYG -->
-<link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/smoothness/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" charset="utf-8"></link>
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/smoothness/jquery-ui-1.8.13.custom.css" type="text/css" media="screen" charset="utf-8"></link>
 <link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/elrte.min.css"                         type="text/css" media="screen" charset="utf-8"></link>
-<script src="{{$a->basePath()}}/resources/elrte/js/jquery-ui-1.8.7.custom.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="{{$a->basePath()}}/resources/elrte/js/elrte.full.js"                  type="text/javascript" charset="utf-8"></script>
+<script src="{{$a->basePath()}}/resources/elrte/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{$a->basePath()}}/resources/elrte/js/elrte-1.3.min.js"                  type="text/javascript" charset="utf-8"></script>
 <script src="{{$a->basePath()}}/resources/elrte/js/i18n/elrte.jp.js"              type="text/javascript" charset="utf-8"></script>
 <!-- elFinder -->
 <script src="{{$a->basePath()}}/resources/elrte/js/elfinder.min.js" type="text/javascript" charset="utf-8"></script>
@@ -25,13 +25,30 @@ img.calendar {
 </style>
 <script language="JavaScript" type="text/javascript">
 //<![CDATA[
+elRTE.prototype.options.panels.myPanel = [
+  'copy', 'cut', 'paste',
+  'undo', 'redo',
+  'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript',
+  'justifyleft', 'justifycenter', 'justifyright', 'justifyfull',
+  'outdent', 'indent',
+  'forecolor', 'hilitecolor',
+  'insertorderedlist', 'insertunorderedlist',
+  'link', 'unlink',
+  'horizontalrule', 'blockquote'
+];
+elRTE.prototype.options.panels.format = ['formatblock', 'fontsize'];
+elRTE.prototype.options.toolbars.myToolbar = ['images', 'myPanel', 'format', 'tables'];
+elRTE.prototype.options.denyTags = [];
+elRTE.prototype.filter.prototype.replaceTags = {};
+elRTE.prototype.filter.prototype.replaceAttrs = {};
+
 var L = {};
 L.basePath = $('meta[name="X-T2C-BasePath"]').attr('content');
 L.elrte_opts = {
     lang: 'jp',
     styleWithCSS: true,
     height: 500,
-    toolbar: 'maxi',
+    toolbar: 'myToolbar',
     fmAllow: true,
     absoluteURLs: false,
     fmOpen : function(callback) {
