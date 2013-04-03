@@ -101,9 +101,11 @@ class Teeple_Filter_View extends Teeple_Filter
                 $renderer->setScriptName(Teeple_Util::getScriptName());
                 
                 $result = $renderer->fetch($template);
+                /*
                 if ($result == "") {
                     throw new Teeple_Exception("Viewのレンダリングに失敗しました。");
                 }
+                */
                 
                 $this->response->setResult($result);
             }
