@@ -144,7 +144,8 @@ $(function() {
 <label>詳細設定</label>
 <label style="display:inline !important"><input type="checkbox" name="api_flg" value="1" {{if $a->api_flg eq '1'}}checked="checked"{{/if}} />APIを公開する</label>
 <small>※投稿APIを公開する場合はチェックを入れてください。</small><br/>
-<label style="display:inline !important"><input type="checkbox" name="exclude_search_flg" value="1" {{if $a->exclude_search_flg eq '1'}}checked="checked"{{/if}} />全文検索対象から外す</label>
+<label style="display:inline !important"><input type="checkbox" name="exclude_search_flg" value="1" {{if $a->exclude_search_flg eq '1'}}checked="checked"{{/if}} />全文検索対象から外す</label><br/>
+<label style="display:inline !important"><input type="checkbox" name="single_page_flg" value="1" {{if $a->single_page_flg eq '1'}}checked="checked"{{/if}} />単一ページ用オブジェクト</label>
 </p>
 </fieldset>
 <div class="clear"></div>

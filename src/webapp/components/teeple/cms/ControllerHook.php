@@ -98,6 +98,30 @@ class Teeple_Cms_ControllerHook extends Teeple_ControllerHook
                 return $page;
             }
         }
+        
+        // オリジナルURL
+        $path = Teeple_Util::getPathInfo();
+        if ($path{strlen($path)-1} == '/') {
+            $path .= "index.html";
+        }
+        $path = preg_replace('/(\..*)?$/', '', $path); // 拡張子を除く
+        
+        $url = Entity_RecordUrl::get()
+            ->join("page")
+            ->join("meta_record")
+            ->eq("base.url", $path, FALSE)
+            ->eq("meta_record.publish_flg", 1)
+            ->eq("meta_record.delete_flg", 0)
+            ->where('meta_record.publish_start_dt IS NULL OR meta_record.publish_start_dt <= now()')
+            ->where('meta_record.publish_end_dt IS NULL OR meta_record.publish_end_dt >= now()')
+            ->order('meta_record.id DESC')
+            ->limit(1)
+            ->find();
+        if ($url) {
+            $url->page->_page_record = $url->meta_record;
+            return $url->page;
+        }
+        
         return null;
     }
     

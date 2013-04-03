@@ -91,6 +91,9 @@ pname:
             if (Teeple_Util::isBlank($this->exclude_search_flg)) {
                 $entity->exclude_search_flg = 0;
             }
+            if (Teeple_Util::isBlank($this->single_page_flg)) {
+                $entity->single_page_flg = 0;
+            }
             $entity->update();
             $this->request->addNotification("オブジェクトを更新しました。");
         } else {

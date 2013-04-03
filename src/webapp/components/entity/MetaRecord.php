@@ -85,6 +85,13 @@ class Entity_MetaRecord extends Entity_Base_MetaRecord
             'relation' => array(
                 'meta_entity_id' => 'id'
             )
+        ),
+        'record_url' => array(
+            'entity' => 'Entity_RecordUrl',
+            'type' => 'LEFT JOIN',
+            'relation' => array(
+                'id' => 'meta_record_id'
+            )
         )
     );
     
@@ -93,8 +100,11 @@ class Entity_MetaRecord extends Entity_Base_MetaRecord
      */
     public $meta_entity;
 
-
-
+    /**
+     * @var Entity_RecordUrl
+     */
+    public $record_url;
+    
 }
 
 ?>

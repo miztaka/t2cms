@@ -132,22 +132,26 @@ __all:
         }
         
         // URLからIDを取得
-        //$basename = basename(Teeple_Util::getPathInfo());
-        $basename = basename($this->request->getPathInfo());
-        $buf = explode('.', $basename);
-        $id = $buf[0];
         $record = NULL;
-        if (! is_numeric($id)) {
-            // 先頭のレコードを取得
-            $records = Teeple_EavRecord::neu($this->_pageInfo->meta_entity_id)
-                ->limit(1)
-                ->select($publishedOnly);
-            if (empty($records)) {
-                return $this->exit404("ページが見つかりません。");
-            }
-            $record = $records[0];
+        if (isset($this->_pageInfo->_page_record)) {
+            $record = Teeple_EavRecord::find($this->_pageInfo->_page_record->id, $publishedOnly);
         } else {
-            $record = Teeple_EavRecord::find($id, $publishedOnly);
+            //$basename = basename(Teeple_Util::getPathInfo());
+            $basename = basename($this->request->getPathInfo());
+            $buf = explode('.', $basename);
+            $id = $buf[0];
+            if (! is_numeric($id)) {
+                // 先頭のレコードを取得
+                $records = Teeple_EavRecord::neu($this->_pageInfo->meta_entity_id)
+                    ->limit(1)
+                    ->select($publishedOnly);
+                if (empty($records)) {
+                    return $this->exit404("ページが見つかりません。");
+                }
+                $record = $records[0];
+            } else {
+                $record = Teeple_EavRecord::find($id, $publishedOnly);
+            }
         }
         if ($record == null) {
             return $this->exit404("ページが見つかりません。");

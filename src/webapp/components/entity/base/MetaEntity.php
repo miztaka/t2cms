@@ -59,6 +59,7 @@ class Entity_Base_MetaEntity extends Teeple_ActiveRecord
     public $seq;
     public $order_by;
     public $exclude_search_flg;
+    public $single_page_flg;
     
     /**
      * プライマリキーが自動セット(auto increment)かどうかを設定します。

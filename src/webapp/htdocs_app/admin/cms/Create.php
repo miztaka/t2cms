@@ -99,6 +99,14 @@ publish_end_dt_ar:
                 $this->$prop_h = $this->$prop;
             }
             
+            // URL
+            if ($this->_record->_metaEntity->single_page_flg) {
+                $url = Entity_RecordUrl::get()->find($this->_record->id);
+                if ($url) {
+                    $this->record_url = $url->url;
+                }
+            }
+            
             // コピー
             if (! Teeple_Util::isBlank($this->_copy)) {
                 $this->crudType = "C";
@@ -148,6 +156,12 @@ publish_end_dt_ar:
         if (! $this->cmsValidator->validate($record, $this)) {
             return $this->onValidateError();
         }
+        
+        // URL入力チェック
+        if ($this->_record->_metaEntity->single_page_flg && ! $this->validateRecordUrl()) {
+            return $this->onValidateError();
+        }
+        
         $record->convert2Entity($this);
         foreach ($record->_metaAttributes as $attr) {
             if ($attr->data_type == Entity_MetaAttribute::DATA_TYPE_CHECK) {
@@ -159,6 +173,11 @@ publish_end_dt_ar:
         }
         $this->uploadLogic->updateFile($this, $record, $record->getImageFieldNames(), $record->_metaEntity->pname);
         $record->update();
+        
+        // URL更新
+        if ($this->_record->_metaEntity->single_page_flg) {
+            $this->createOrUpdateRecordUrl();
+        }
         
         $this->request->addNotification("レコードを更新しました。");
         //return $this->redirect(Admin_Cms_List::actionName());
@@ -176,6 +195,12 @@ publish_end_dt_ar:
         if (! $this->cmsValidator->validate($record, $this)) {
             return $this->onValidateError();
         }
+        
+        // URL入力チェック
+        if ($this->_record->_metaEntity->single_page_flg && ! $this->validateRecordUrl()) {
+            return $this->onValidateError();
+        }
+        
         $record->convert2Entity($this);
         $record->insert();
         $imageFields = $record->getImageFieldNames();
@@ -183,6 +208,12 @@ publish_end_dt_ar:
             $this->uploadLogic->updateFile($this, $record, $record->getImageFieldNames(), $record->_metaEntity->pname);
             $record->update();
         }
+        
+        // URL更新
+        if ($this->_record->_metaEntity->single_page_flg) {
+            $this->createOrUpdateRecordUrl();
+        }
+        
         $this->request->addNotification("レコードを作成しました。");
         //return $this->redirect(Admin_Cms_List::actionName());
         return $this->back2list("create");
@@ -202,6 +233,57 @@ publish_end_dt_ar:
     protected function back2list($done) {
         $url = "list.html?meta_entity_id={$this->meta_entity_id}&action:doBack=true&_done={$done}";
         return "location: $url";
+    }
+
+    /**
+     * ページテンプレートの選択肢を取得します。
+     */
+    public function recordPageOptions() {
+        
+        $pages = Entity_Page::get()
+            ->eq("meta_entity_id", $this->_record->_metaEntity->id)
+            ->order("base.id")->select();
+        $result = array();
+        foreach ($pages as $page) {
+            $result[$page->id] = $page->name;
+        }
+        return $result;
+    }
+    
+    /**
+     * Entity_RecordUrlを更新(なければ新規作成)します。
+     */
+    protected function createOrUpdateRecordUrl() {
+        
+        $record_url = Entity_RecordUrl::get()->find($this->_record->id);
+        if ($record_url) {
+            if ($record_url->url != $this->record_url) {
+                $record_url->url = $this->record_url;
+                $record_url->update();
+            }
+        } else {
+            $record_url = Entity_RecordUrl::get();
+            $record_url->meta_record_id = $this->_record->id;
+            $record_url->page_id = $this->record_page_id;
+            $record_url->url = $this->record_url;
+            $record_url->insert();
+        }
+        return true;
+    }
+    
+    /**
+     * 単一ページオブジェクトの場合の追加項目チェック
+     */
+    protected function validateRecordUrl() {
+        
+        // 入力チェック TODO URL型式チェック
+        if (Teeple_Util::isBlank($this->record_url)) {
+            $this->request->addErrorMessage("URLを入力してください。");
+        }
+        if (Teeple_Util::isBlank($this->record_page_id)) {
+            $this->request->addErrorMessage("テンプレートを選択してください。");
+        }
+        return ! $this->request->isError(); 
     }
 
 }

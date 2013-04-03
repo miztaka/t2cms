@@ -278,13 +278,16 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
         
         // オブジェクト構築
         $order_by_rec = str_replace("base.", "meta_record.", $order_by);
-        $metaValues = Entity_MetaValue::get()
+        $queryMetaValues = Entity_MetaValue::get()
             ->join('meta_record')
             ->join('meta_attribute')
             ->in('base.meta_record_id', $page_ids)
             ->eq('base.delete_flg', 0)
-            ->order($order_by_rec)
-            ->select();
+            ->order($order_by_rec);
+        if ($this->_metaEntity->single_page_flg) {
+            $queryMetaValues->join('meta_record$record_url');
+        }
+        $metaValues = $queryMetaValues->select();
         
         $items = array();
         $one = $this->newInstance();
@@ -294,6 +297,9 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
             if ($current_id == NULL) {
                 $current_id = $metaV->meta_record_id;
                 $one->convert2Entity($metaV->meta_record);
+                if ($metaV->meta_record->record_url) {
+                    $one->record_url = $metaV->meta_record->record_url->url;
+                }
             }
             if ($current_id != $metaV->meta_record_id) {
                 $items[] = $one;
@@ -454,6 +460,9 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
     public function getListColumns() {
         
         $result = array('id' => 'ID'); // IDは必須
+        if ($this->_metaEntity->single_page_flg) {
+            $result["record_url"] = "URL"; // 単一ページオブジェクトの場合はURLも必須
+        }
         foreach ($this->_metaAttributes as $attr) {
             if ($attr->list_flg) {
                 $result[$attr->pname] = $attr->label;

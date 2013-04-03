@@ -45,23 +45,27 @@ elRTE.prototype.filter.prototype.replaceAttrs = {};
 var L = {};
 L.basePath = $('meta[name="X-T2C-BasePath"]').attr('content');
 L.elrte_opts = {
-    lang: 'jp',
-    styleWithCSS: true,
-    height: 500,
-    toolbar: 'myToolbar',
-    fmAllow: true,
-    absoluteURLs: false,
-    fmOpen : function(callback) {
-    $('<div id="myelfinder" />').elfinder({  
-　　　　    url : L.basePath + '/elfinder.php',
-　　　　    lang : 'jp',
-　　　　    dialog : { width : 900, modal : true, title : 'Files' },
-　　　　    closeOnEditorCallback : true,
-　　　　    editorCallback : callback
-            //cutURL : 'root'
-        })
-    }
-};
+      lang: 'jp',
+      styleWithCSS: true,
+      cssClass : 'el-rte',
+      //cssfiles: ['/common/css/common_editor.css'],
+      height: 500,
+      toolbar: 'myToolbar',
+      fmAllow: true,
+      stripWhiteSpace : false,
+      absoluteURLs: false,
+      fmOpen : function(callback) {
+      $('<div id="myelfinder" />').elfinder({  
+  　　　　    url : L.basePath + '/elfinder.php',
+  　　　　    lang : 'jp',
+  　　　　    dialog : { width : 900, modal : true, title : 'Files' },
+  　　　　    closeOnEditorCallback : true,
+  　　　　    editorCallback : callback
+              //cutURL : 'root'
+          })
+      }
+  };
+
 L.preview_resourse = function(i) {
     var div = i.prev();
     div.html("");
@@ -181,6 +185,18 @@ $(function() {
 <input type="hidden" name="meta_entity_id" value="{{$a->meta_entity_id|escape}}" />
 
 <fieldset>
+{{if $a->_record->_metaEntity->single_page_flg}}
+<p>
+<label for="record_url">URL<sup title="必須">*</sup></label>
+<input type="text" name="record_url" value="{{$a->record_url|escape}}" class="text-input large-input" />
+</p>
+<p>
+<label for="record_page_id">テンプレート<sup title="必須">*</sup></label>
+<select name="record_page_id" id="record_page_id">
+{{html_options options=$a->recordPageOptions() selected=$a->record_page_id}}
+</select>
+</p>
+{{/if}}
 <div class="check_list">
 <label for="publish_flg">公開状態<sup title="必須">*</sup></label>
 <ul>{{html_radios name='publish_flg' options=$a->publish_flgOptions() selected=$a->publish_flg assign=cbs}}
