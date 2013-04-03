@@ -6,6 +6,8 @@
 {{include file='admin/parts/common_head.html'}}
 <link rel="stylesheet" href="{{$a->basePath()}}/resources/css/pagination.css" type="text/css" media="screen" />
 <script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/jquery.pagination.js"></script>
+<script type="text/javascript" src="{{$a->basePath()}}/resources/jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="{{$a->basePath()}}/resources/jquery-ui/js/jquery.ui.datepicker-ja.js"></script>
 <script language="JavaScript" type="text/javascript">
 //<![CDATA[
 var L = {};
@@ -43,6 +45,7 @@ jQuery(function($){
             $.facebox({ ajax: url });
         });
     });
+    $('.datepicker').datepicker({ dateFormat: 'yy-mm-dd'});
 });
 
 //]]>
@@ -114,6 +117,10 @@ td { vertical-align: middle; }
 </p>
 {{/if}}
 <a id="addSearchItem" class="buttonLink" href="#">条件追加</a>
+<p>
+<label>登録日</label>
+<input type="text" name="create_time_from" value="{{$a->create_time_from}}" class="text-input datepicker" size="12" />&nbsp; ～ &nbsp;<input type="text" name="create_time_to" value="{{$a->create_time_to}}" class="text-input datepicker" size="12" />
+</p>
 <p>
 <label><input type="checkbox" name="published_only" value="1" {{if $a->published_only}}checked="checked"{{/if}} />公開されているレコードのみ表示する</label>
 </p>

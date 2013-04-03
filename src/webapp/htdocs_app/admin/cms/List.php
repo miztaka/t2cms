@@ -141,7 +141,9 @@ __all:
             "search_word",
             "search_ope",
             "search_ref",
-            "published_only"
+            "published_only",
+            "create_time_from",
+            "create_time_to"
         ));
         $srch_conds->copyFrom($this);
         $srch_conds->limit = $this->limit;
@@ -188,6 +190,12 @@ __all:
             foreach ($searchConds->search_ref as $pname => $value) {
                 $eav->eq($pname, $value);
             }
+        }
+        if (! Teeple_Util::isBlank($searchConds->create_time_from)) {
+            $eav->ge("create_time", $searchConds->create_time_from." 00:00:00");
+        }
+        if (! Teeple_Util::isBlank($searchConds->create_time_to)) {
+            $eav->le("create_time", $searchConds->create_time_to." 23:59:59");
         }
         
         $publishedOnly = $searchConds->published_only == '1' ? true : false;

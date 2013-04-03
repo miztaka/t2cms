@@ -9,7 +9,7 @@ require_once 'plugin/ObjectPlugin.php';
  */
 class Teeple_EavRecord extends Teeple_SqlBuilder {
     
-    public static $_SELECT_FIELD = array('publish_start_dt', 'publish_end_dt', 'seq', 'create_time', 'timestamp');
+    public static $_SELECT_FIELD = array('publish_start_dt', 'publish_end_dt', 'seq', 'create_time', 'timestamp', 'id');
     
     /**
      * @var Teeple_Bean

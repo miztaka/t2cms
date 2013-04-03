@@ -132,7 +132,8 @@ __all:
         }
         
         // URLからIDを取得
-        $basename = basename(Teeple_Util::getPathInfo());
+        //$basename = basename(Teeple_Util::getPathInfo());
+        $basename = basename($this->request->getPathInfo());
         $buf = explode('.', $basename);
         $id = $buf[0];
         $record = NULL;

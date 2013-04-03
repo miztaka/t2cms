@@ -75,6 +75,8 @@ class Teeple_Request
     
     private $_encoding = array();
     
+    private $_pathinfo = NULL;
+    
     /**
      * @var Logger
      */
@@ -376,6 +378,17 @@ class Teeple_Request
         if (!ini_get("mbstring.encoding_translation") && ($encoding != INTERNAL_CODE)) {
             mb_convert_variables(INTERNAL_CODE, $encoding, $this->_params);
         }
+    }
+    
+    public function getPathInfo() {
+        if ($this->_pathinfo) {
+            return $this->_pathinfo;
+        }
+        return Teeple_Util::getPathInfo();
+    }
+    
+    public function setPathInfo($path) {
+        $this->_pathinfo = $path;
     }
     
 }

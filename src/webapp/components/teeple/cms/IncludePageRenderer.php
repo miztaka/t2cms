@@ -57,6 +57,7 @@ class Teeple_Cms_IncludePageRenderer {
         $session = $container->getComponent('Teeple_Session');
         $request = $container->getPrototype('Teeple_Request'); // 新しいリクエストを作る
         $this->resetRequest($request);
+        $request->setPathInfo($this->_path_info);
         if (count($this->_params)) {
             foreach ($this->_params as $key => $val) {
                 $request->setParameter($key, $val);

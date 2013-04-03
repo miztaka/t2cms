@@ -1118,6 +1118,7 @@ function elDialogForm(o) {
 (function($) {
 
 elRTE = function(target, opts) {
+
 	if (!target || !target.nodeName) {
 		return alert('elRTE: argument "target" is not DOM Element');
 	}
@@ -1490,7 +1491,8 @@ elRTE.prototype.val = function(v) {
 		if (this.source.is(':visible')) {
 			return this.filter.source2source(this.source.val()).trim();
 		} else {
-			return this.filter.source($(this.doc.body).html()).trim();
+			//return this.filter.source($(this.doc.body).html()).trim();
+			return this.filter.source($(this.doc.body).html());
 		}
 	}
 }
@@ -2333,7 +2335,8 @@ elRTE.prototype.dom = function(rte) {
 				html = this.call(self, html);
 			});
 			html = html.replace(/\t/g, '  ').replace(/\r/g, '').replace(/\s*\n\s*\n+/g, "\n")+'  ';
-			return $.trim(html) ? html : ' ';
+			//return $.trim(html) ? html : ' ';
+			return $.trim(html) ? html : '&nbsp;';
 		}
 		
 		/**
