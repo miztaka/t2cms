@@ -307,6 +307,9 @@ class Teeple_EavRecord extends Teeple_SqlBuilder {
                 $one = $this->newInstance();
                 $one->convert2Entity($metaV->meta_record);
                 $current_id = $metaV->meta_record_id;
+                if ($metaV->meta_record->record_url) {
+                    $one->record_url = $metaV->meta_record->record_url->url;
+                }
             }
             $one->setValue($metaV);
         }

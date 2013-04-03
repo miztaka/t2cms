@@ -170,7 +170,9 @@ td { vertical-align: middle; }
 <tr>
 {{foreach from=$a->_list_columns key=k item=col}}
 {{assign var=attr value=$a->_record->getAttributeByPname($k)}}
-{{if $k eq 'publish_flg'}}
+{{if $k eq 'record_url'}}
+<td>{{$p->record_url}}.html</td>
+{{elseif $k eq 'publish_flg'}}
 <td>{{$p->publish_flg|label:$a->publish_flgOptions()}}</td>
 {{elseif $k eq 'publish_start_dt' || $k eq 'publish_end_dt' || $k eq 'create_time'}}
 <td>{{$p->$k|date_format:$a->datetimeformat()}}</td>
