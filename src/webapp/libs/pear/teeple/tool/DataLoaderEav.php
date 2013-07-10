@@ -48,6 +48,26 @@ class Teeple_Tool_DataLoaderEav extends Teeple_Tool_DataLoader {
         return $entity;
     }
     
+    /**
+     * データをエンティティにセットします。
+     * @param Teeple_EavRecord $entity
+     * @param string $prop
+     * @param string $value
+     */
+    protected function setValue2Entity($entity, $prop, $value) {
+        
+        mb_regex_encoding('UTF-8');
+        $data_type = $entity->getAttributeByPname($prop)->data_type;
+        if ($data_type == Entity_MetaAttribute::DATA_TYPE_CHECK ||
+            $data_type == Entity_MetaAttribute::DATA_TYPE_MULTISELECT) {
+            if (! Teeple_Util::isBlank($value)) {
+                $ar = mb_split("，", $value);
+                $value = serialize($ar);
+            }
+        }
+        $entity->$prop = $value;
+    }
+    
 }
 
 ?>

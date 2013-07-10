@@ -136,7 +136,8 @@ class Teeple_Tool_DataLoader {
                 //$cell = $cellIterator->current();
             foreach ($cellIterator as $cell) {
                 $prop = $col[$i];
-                $entity->$prop = trim($cell->getValue());
+                $this->setValue2Entity($entity, $prop, trim($cell->getValue()));
+                //$entity->$prop = trim($cell->getValue());
                 //$cellIterator->next();
                 $i++;
             }
@@ -175,6 +176,16 @@ class Teeple_Tool_DataLoader {
             $entity->deleteAll();
         }
         return;
+    }
+    
+    /**
+     * データをエンティティにセットします。
+     * @param Teeple_ActiveRecord $entity
+     * @param string $prop
+     * @param string $value
+     */
+    protected function setValue2Entity($entity, $prop, $value) {
+        $entity->$prop = $value;
     }
     
 }

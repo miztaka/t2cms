@@ -53,6 +53,7 @@ class Writer_CsvWriter
         }
         
         $output = mb_convert_encoding(implode("\r\n", $result), $this->charset, SCRIPT_CODE);
+        $output .= "\r\n"; // 最後にも改行
         if ($filename) {
             if (! ($fp = fopen($filename, 'wb'))) {
                 throw new Teeple_Exception('ファイルを開けません。');
