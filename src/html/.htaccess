@@ -12,3 +12,5 @@ RewriteRule ^(.*)$ teeple_controller.php/$1 [L]
 
 Options +Includes +FollowSymLinks
 AddHandler server-parsed html
+
+php_value date.timezone 'Asia/Tokyo'
