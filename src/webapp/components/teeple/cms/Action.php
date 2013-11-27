@@ -156,6 +156,9 @@ __all:
         if ($record == null) {
             return $this->exit404("ページが見つかりません。");
         }
+        if ($record->_metaEntity->id != $this->_pageInfo->meta_entity_id) {
+            return $this->exit404("ページが見つかりません。");
+        }
         
         // レコードをテンプレートにセット
         $this->__smarty->assign('record', $record);
