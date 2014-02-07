@@ -66,6 +66,8 @@ class Entity_Base_Page extends Teeple_ActiveRecord
     public $nosave_flg;
     public $auto_reply;
     public $auto_reply_subject;
+    public $sender_email;
+    public $sender_name;
     
     
     /**

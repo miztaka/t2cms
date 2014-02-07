@@ -48,6 +48,7 @@ L.elrte_opts = {
       lang: 'jp',
       styleWithCSS: true,
       cssClass : 'el-rte',
+      {{if $a->_record->_metaEntity->editor_css}}cssfiles: [{{$a->_record->_metaEntity->editor_css}}],{{/if}}
       //cssfiles: ['/common/css/common_editor.css'],
       height: 500,
       toolbar: 'myToolbar',

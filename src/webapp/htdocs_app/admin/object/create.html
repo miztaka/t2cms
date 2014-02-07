@@ -147,6 +147,10 @@ $(function() {
 <label style="display:inline !important"><input type="checkbox" name="exclude_search_flg" value="1" {{if $a->exclude_search_flg eq '1'}}checked="checked"{{/if}} />全文検索対象から外す</label><br/>
 <label style="display:inline !important"><input type="checkbox" name="single_page_flg" value="1" {{if $a->single_page_flg eq '1'}}checked="checked"{{/if}} />単一ページ用オブジェクト</label>
 </p>
+<p>
+<label>エディターCSS設定</label>
+<input type="text" name="editor_css" value="{{$a->editor_css|escape}}" class="text-input large-input" />
+</p>
 </fieldset>
 <div class="clear"></div>
 </form>

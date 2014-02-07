@@ -383,8 +383,11 @@ __all:
         $form_data = array();
         foreach ($this->_record->_metaAttributes as $attr) {
             $pname = $attr->pname;
+            /*
             $buff = is_array($this->_record->$pname) ? 
                 implode("\n", $this->_record->$pname) : $this->_record->$pname;
+                */
+            $buff = $this->_record->label($pname);
             $form_data[] = "[". $attr->label ."]\n". $buff;
         }
         $data = array(
@@ -392,7 +395,13 @@ __all:
             'page_name' => $this->_pageInfo->name,
             'form_data' => implode("\n\n", $form_data)
         );
-        if (! QdmailFactory::instance()->sendTextEmail($data, $subject, $body)) {
+        // 差出人
+        $sender = null;
+        if ($this->_pageInfo->sender_email) {
+            $sender['address'] = $this->_pageInfo->sender_email;
+            $sender['name'] = $this->_pageInfo->sender_name;
+        }
+        if (! QdmailFactory::instance()->sendTextEmail($data, $subject, $body, true, $sender)) {
             $this->log->error("通知メールの送信に失敗しました。");
         }
         return;
@@ -411,7 +420,13 @@ __all:
             $data[$pname] = $this->_record->label($pname);
         }
         $data['mail'] = $this->_record->email;
-        if (! QdmailFactory::instance()->sendTextEmail($data, $subject, $body)) {
+        // 差出人
+        $sender = null;
+        if ($this->_pageInfo->sender_email) {
+            $sender['address'] = $this->_pageInfo->sender_email;
+            $sender['name'] = $this->_pageInfo->sender_name;
+        }
+        if (! QdmailFactory::instance()->sendTextEmail($data, $subject, $body, true, $sender)) {
             $this->log->error("自動返信メールの送信に失敗しました。");
         }
         return;

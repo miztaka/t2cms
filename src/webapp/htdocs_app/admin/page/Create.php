@@ -35,7 +35,10 @@ class Admin_Page_Create extends AdminActionBase
 "notify_email.通知先メールアドレス":
     maxbytelength: { maxbytelength: 128 }
     email: {}
-    ';
+"sender_email.差出人メールアドレス":
+    maxbytelength: { maxbytelength: 128 }
+    email: {}
+';
     
     // Converterを実行したいときに定義。(ex. sample/Converter.php)
     const CONVERTER_CONFIG = '

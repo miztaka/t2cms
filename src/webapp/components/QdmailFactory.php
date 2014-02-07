@@ -34,7 +34,7 @@ class QdmailFactory {
      * Qdmailのインスタンスを返却します。
      * @return Qdmail
      */
-    public function getQdmail() {
+    public function getQdmail($sender=null) {
         $qdmail = new Qdmail();
         $qdmail->errorDisplay(false);
         $qdmail->lineFeed("\n");
@@ -42,8 +42,13 @@ class QdmailFactory {
         $qdmail->kana(true);
         //$qdmail->addHeader('Errors-To', '');
         
-        $from = $this->resource->getResource("mail.from");
-        $name = $this->resource->getResource("mail.name");
+        if ($sender == null) {
+            $from = $this->resource->getResource("mail.from");
+            $name = $this->resource->getResource("mail.name");
+        } else {
+            $from = $sender['address'];
+            $name = $sender['name'];
+        }
         $qdmail->from($from, $name);
         $qdmail->mtaOption("-f$from");
         
@@ -58,9 +63,9 @@ class QdmailFactory {
      * @param $replace bool
      * @return bool
      */
-    public function sendTextEmail($data, $subject, $body, $replace=true) {
+    public function sendTextEmail($data, $subject, $body, $replace=true, $sender=null) {
         
-        $qdmail = $this->getQdmail();
+        $qdmail = $this->getQdmail($sender);
         $email = $data['mail'];
         // Willcomの場合は7bitでおくる
         if (strpos($email, 'pdx.ne.jp') !== FALSE ||

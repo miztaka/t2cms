@@ -141,6 +141,11 @@ jQuery(function($) {
 <textarea name="auto_reply" class="text-input textarea" rows="10">{{$a->auto_reply|escape}}</textarea>
 <small>※自動返信メールを送信したい場合はタイトルと文面を入力してください。メールアドレスは参照名を"email"としてください。</small>
 </p>
+<p class="form_page">
+<label>自動返信メール差出人</label>
+差出人名：<input type="text" name="sender_name" value="{{$a->sender_name|escape}}" class="text-input medium-input" /><br/>
+アドレス：<input type="text" name="sender_email" value="{{$a->sender_email|escape}}" class="text-input medium-input" /><br/>
+</p>
 <div class="check_list form_page">
 <label>投稿データの公開状態</label>
 {{html_radios name='default_publish_flg' options=$a->publish_flgOptions() selected=$a->default_publish_flg assign=cbs}}
