@@ -86,6 +86,7 @@ class Teeple_Session
     public function start() {
         
         if (! Net_UserAgent_Mobile::singleton()->isNonMobile()) {
+        	@ini_set('session.use_only_cookies','0');
             @ini_set('session.use_trans_sid','1');
         }
         @session_start();
