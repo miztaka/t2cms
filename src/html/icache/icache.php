@@ -19,14 +19,11 @@ class ImageCache {
         require_once $libs."/pear/class.image.php";
         require_once $libs."/pear/FileTool.php";
 
-        $path_orig = $_SERVER['PATH_INFO'];
-        $path = trim($path_orig, "/");
-        list($param, $path) = explode("/", $path, 2);
-        $this->origImagePath = realpath($documentRoot."/".$path);
-        if ($this->origImagePath === FALSE) {
-            $this->exit404("{$path} is not found");
-            return;
+        list($path_orig, $param, $origImagePath) = $this->parsePath($documentRoot);
+        if ($path_orig == NULL) {
+        	return; // 404 not found
         }
+        $this->origImagePath = $origImagePath;
 
         $w = self::INFINITE;
         $h = self::INFINITE;
@@ -159,6 +156,38 @@ class ImageCache {
         return;
     }
     
+    private function encodePath($path, $sep="/") {
+    	
+    	$chunk = array();
+    	$ar = explode($sep, $path);
+    	foreach ($ar as $a) {
+    		if ($sep != "+") {
+    			$chunk[] = $this->encodePath($a,"+");
+    		} else {
+    			$chunk[] = urlencode($a);
+    		}
+    	}
+    	return implode($sep, $chunk);
+    }
+    
+    private function parsePath($documentRoot) {
+    	
+    	$result = array();
+    	$path2 = $_SERVER['PATH_INFO'];
+    	$path1 = $this->encodePath($_SERVER['PATH_INFO']);
+    	
+    	foreach (array($path1,$path2) as $path_orig) {
+    		$path = trim($path_orig, "/");
+    		list($param, $path) = explode("/", $path, 2);
+    		$origImagePath = realpath($documentRoot."/".$path);
+    		if ($origImagePath !== FALSE) {
+    			// OK!
+    			return array($path_orig, $param, $origImagePath);
+    		}
+    	}
+    	$this->exit404("{$path} is not found");
+    	return array(NULL, NULL, NULL);
+    }
 }
 
 $obj = new ImageCache();
