@@ -18,7 +18,7 @@
 /**
  * Token管理を行う
  *
- * @package     teeple
+ * @package teeple
  */
 class Teeple_Token
 {
@@ -28,14 +28,22 @@ class Teeple_Token
      * @access  private
      * @since   3.0.0
      */
-    var $_name;
+    private $_name;
 
     /**
      * @var Teeple_Session
      */
-    var $_session;
+    private $_session;
     public function setComponent_Teeple_Session($c) {
-        $this->_session = $c;
+    	$this->_session = $c;
+    }
+    
+    /**
+     * @var Teeple_Request
+     */
+    private $_request;
+    public function setComponent_Teeple_Request($c) {
+    	$this->_request = $c;
     }
 
     /**
@@ -44,22 +52,10 @@ class Teeple_Token
      * @access  public
      * @since   3.0.0
      */
-    function __construct()
+    public function __construct()
     {
         $this->_name = "";
         $this->_session = NULL;
-    }
-
-    /**
-     * Sessionのインスタンスをセット
-     *
-     * @param   Object  $session    Sessionのインスタンス
-     * @access  public
-     * @since   3.0.0
-     */
-    function setSession($session)
-    {
-        $this->_session = $session;
     }
 
     /**
@@ -69,10 +65,10 @@ class Teeple_Token
      * @access  public
      * @since   3.0.0
      */
-    function getName()
+    public function getName()
     {
         if ($this->_name == "") {
-            $this->_name = "mapleToken";
+            $this->_name = "teepleToken";
         }
 
         return $this->_name;
@@ -85,7 +81,7 @@ class Teeple_Token
      * @access  public
      * @since   3.0.0
      */
-    function setName($name)
+    public function setName($name)
     {
         $this->_name = $name;
     }
@@ -97,7 +93,7 @@ class Teeple_Token
      * @access  public
      * @since   3.0.0
      */
-    function getValue()
+    public function getValue()
     {
         return $this->_session->getParameter($this->getName());
     }
@@ -108,23 +104,20 @@ class Teeple_Token
      * @access  public
      * @since   3.0.0
      */
-    function build()
+    public function build()
     {
         $this->_session->setParameter($this->getName(), md5(uniqid(rand(),1)));
     }
 
     /**
      * Tokenの値を比較
-     *
-     * @param   Object  $value  Requestクラスのインスタンス
-     * @return  boolean Tokenの値が一致するか？
-     * @access  public
-     * @since   3.0.0
+     * 
+     * @return boolean Tokenの値が一致するか？
      */
-    function check(&$request)
+    public function check()
     {
         return (($this->getValue() != '') &&
-                $this->getValue() == $request->getParameter($this->getName()));
+                $this->getValue() == $this->_request->getParameter($this->getName()));
     }
 
     /**
@@ -133,9 +126,8 @@ class Teeple_Token
      * @access  public
      * @since   3.0.0
      */
-    function remove()
+    public function remove()
     {
         $this->_session->removeParameter($this->getName());
     }
 }
-?>

@@ -65,7 +65,7 @@ td { vertical-align: middle; }
 <div style="float:left; vertical-align:middle; padding-top: 7px; padding-left: 15px;">
 <form method="get" action="create.html">
 <fieldset>
-<input type="hidden" name="meta_entity_id" value="{{$a->meta_entity_id}}" />
+<input type="hidden" name="meta_entity_id" value="{{$a->meta_entity_id|escape}}" />
 <input type="submit" value="新規登録" class="button" />
 </fieldset>
 </form>
@@ -97,7 +97,7 @@ td { vertical-align: middle; }
 {{html_options options=$a->metaAttributeOptions() selected=$a->search_field[cnt]}}
 </select>
 が
-<input type="text" name="search_word[]" value="{{$a->search_word[cnt]}}" class="text-input" />
+<input type="text" name="search_word[]" value="{{$a->search_word[cnt]|escape}}" class="text-input" />
 <select name="search_ope[]">
 {{html_options options=$a->search_opeOptions() selected=$a->search_ope[cnt]}}
 </select>

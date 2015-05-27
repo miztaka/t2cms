@@ -68,6 +68,14 @@ abstract class Teeple_ActionBase {
     }
     
     /**
+     * @var Teeple_Token
+     */
+    protected $teepleToken;
+    public function setComponent_Teeple_Token($c) {
+    	$this->teepleToken = $c;
+    }
+    
+    /**
      * コンストラクタです。
      */
     public function __construct() {
