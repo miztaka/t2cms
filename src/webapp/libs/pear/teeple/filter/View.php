@@ -103,7 +103,7 @@ class Teeple_Filter_View extends Teeple_Filter
                 $result = $renderer->fetch($template);
                 /*
                 if ($result == "") {
-                    throw new Teeple_Exception("Viewのレンダリングに失敗しました。");
+                    //throw new Teeple_Exception("Viewのレンダリングに失敗しました。");
                 }
                 */
                 
