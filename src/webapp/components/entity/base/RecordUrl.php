@@ -4,19 +4,19 @@ class Entity_Base_RecordUrl extends Teeple_ActiveRecord
 {
 
     /**
-     * �g�p����f�[�^�\�[�X�����w�肵�܂��B
-     * �w�肪�����ꍇ�́ADEFAULT_DATASOURCE �Őݒ肳��Ă���DataSource�����g�p����܂��B
+     * 使用するデータソース名を指定します。
+     * 指定が無い場合は、DEFAULT_DATASOURCE で設定されているDataSource名が使用されます。
      *
      * @var string
      */
     public static $_DATASOURCE = 'teeple2cms';
     
     /**
-     * ���̃G���e�B�e�B�̃e�[�u������ݒ肵�܂��B
+     * このエンティティのテーブル名を設定します。
      * 
      * <pre>
-     * �X�L�[�}��ݒ肷��ꍇ�́A"�X�L�[�}.�e�[�u����"�Ƃ��܂��B
-     * �q�N���X�ɂĕK���Z�b�g����K�v������܂��B
+     * スキーマを設定する場合は、"スキーマ.テーブル名"とします。
+     * 子クラスにて必ずセットする必要があります。
      * </pre>
      *
      * @var string
@@ -24,11 +24,11 @@ class Entity_Base_RecordUrl extends Teeple_ActiveRecord
     public static $_TABLENAME = 'record_url';
     
     /**
-     * �v���C�}���L�[���ݒ肵�܂��B
+     * プライマリキー列を設定します。
      * 
      * <pre>
-     * �v���C�}���L�[�ƂȂ�J��������z��Ŏw�肵�܂��B
-     * �q�N���X�ɂĕK���Z�b�g����K�v������܂��B
+     * プライマリキーとなるカラム名を配列で指定します。
+     * 子クラスにて必ずセットする必要があります。
      * </pre>
      * 
      * @var array 
@@ -38,9 +38,9 @@ class Entity_Base_RecordUrl extends Teeple_ActiveRecord
     );
     
     /**
-     * ���̃e�[�u���̃J��������public�v���p�e�B�Ƃ��Đݒ肵�܂��B(�v���C�}���L�[������)
+     * このテーブルのカラム名をpublicプロパティとして設定します。(プライマリキーを除く)
      * <pre>
-     * �q�N���X�ɂĕK���Z�b�g����K�v������܂��B
+     * 子クラスにて必ずセットする必要があります。
      * </pre>
      */
     public $meta_record_id;
@@ -56,10 +56,10 @@ class Entity_Base_RecordUrl extends Teeple_ActiveRecord
 
     
     /**
-     * �v���C�}���L�[�������Z�b�g(auto increment)���ǂ�����ݒ肵�܂��B
+     * プライマリキーが自動セット(auto increment)かどうかを設定します。
      * 
      * <pre>
-     * �q�N���X�ɂĕK���Z�b�g����K�v������܂��B
+     * 子クラスにて必ずセットする必要があります。
      * </pre>
      * 
      * @var bool 
