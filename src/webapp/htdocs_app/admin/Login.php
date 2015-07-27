@@ -87,7 +87,7 @@ __all:
             return NULL;
         }
         */
-	    if ($account->login_pw != $this->login_pw) {
+	    if ($account->login_pw != U::hashPassword($this->login_pw)) {
 	        // パスワード間違い
 	        $account->pw_fail_num += 1;
 	        if ($account->pw_fail_num >= PW_FAIL_LIMIT) {

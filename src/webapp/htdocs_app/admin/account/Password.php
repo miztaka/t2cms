@@ -71,7 +71,7 @@ __all:
             $this->request->addErrorMessage("システムエラーが発生しました。");
             return $this->redirect(Admin_Home::actionName());
         }
-        $account->login_pw = $this->password;
+        $account->login_pw = U::hashPassword($this->password);
         $account->pw_change_date = $account->now();
         $account->update();
         
@@ -94,7 +94,7 @@ __all:
             $this->request->addErrorMessage($message);
             return FALSE;
         }
-        if ($this->loginaccount->info->login_pw == $this->password) {
+        if ($this->loginaccount->info->login_pw == U::hashPassword($this->password)) {
             $this->request->addErrorMessage('現在のパスワードと同じです。');
             return FALSE;
         }

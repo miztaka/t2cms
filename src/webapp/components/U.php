@@ -147,7 +147,16 @@ class U
         
         $w = date('w', strtotime($day));
         return $style == 'short' ? $short[$w] : $long[$w];
-    }    
+    }
+    
+    /**
+     * パスワードをハッシュします。
+     * @param unknown $pass
+     */
+    public static function hashPassword($pass) {
+    	return sha1($pass.PW_SALT);
+    }
+    
 }
 
 ?>

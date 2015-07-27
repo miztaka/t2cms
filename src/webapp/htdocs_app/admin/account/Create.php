@@ -114,12 +114,13 @@ __all:
             
             $entity = Entity_LoginAccount::get();
             $entity->convert2Entity($this);
-            $entity->login_pw = U::randString(8);
+            $raw_pw = U::randString(8);
+            $entity->login_pw = U::hashPassword($raw_pw);
             $entity->pw_change_date = $entity->now();
             $entity->insert();
             
-            $this->request->addNotification("アカウントを作成しました。パスワードは {$entity->login_pw} です。忘れずにメモしてください。");
-            $this->login_pw = $entity->login_pw;
+            $this->request->addNotification("アカウントを作成しました。パスワードは {$raw_pw} です。忘れずにメモしてください。");
+            $this->login_pw = $raw_pw;
             return "admin/account/create_complete.html";
         }
         

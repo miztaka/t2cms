@@ -118,7 +118,8 @@ __all:
             return NULL;
         }
         
-        $account->login_pw = U::randString(8);
+        $raw_pw = U::randString(8);
+        $account->login_pw = U::hashPassword($raw_pw);
         $account->pw_change_date = $account->now();
         $account->lock_flg = 0;
         $account->pw_fail_num = 0;
@@ -129,7 +130,7 @@ __all:
         $data = array(
             'mail' => $account->email,
             'name'  => $account->name ."様",
-            'login_pw' => $account->login_pw
+            'login_pw' => $raw_pw
         );
         $subject = $this->resource->getResource("mail.subject.change_pw");
         $body = $this->resource->getResource("mail.body.change_pw");
@@ -141,8 +142,10 @@ __all:
         }
         */
         
-        $this->request->addNotification("再発行したパスワードは {$account->login_pw} です。忘れずにメモしてください。 ");
+        $this->request->addNotification("再発行したパスワードは {$raw_pw} です。忘れずにメモしてください。 ");
         $account->convert2Page($this);
+        $this->login_pw = $raw_pw;
+        
         return "admin/account/create_complete.html";
     }
     
