@@ -28,7 +28,8 @@ class Entity_LoginAccount extends Entity_Base_LoginAccount
     public static $_roleOptions = array(
         'sysadm' => 'システム管理',
         'admin' => 'サイト管理',
-        'normal' => 'サイト運営'
+        'normal' => 'サイト運営',
+    	'limited' => '特定コンテンツ編集者'
     );
 
     /**

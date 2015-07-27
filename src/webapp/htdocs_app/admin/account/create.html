@@ -6,7 +6,20 @@
 {{include file='admin/parts/common_head.html'}}
 <script language="JavaScript" type="text/javascript">
 //<![CDATA[
-
+var toggle_allowed_entity = function() {
+	var role = $('select#role').val();
+	if (role == 'limited') {
+		$('#allowed_entity_div').show();
+	} else {
+		$('#allowed_entity_div').hide();
+	}
+};
+jQuery(function($) {
+	$('select#role').change(function() {
+		toggle_allowed_entity();
+	});
+	toggle_allowed_entity();
+});
 //]]>
 </script>
 </head>
@@ -42,11 +55,20 @@
 </p>
 <p>
 <label for="role">権限<sup title="必須">*</sup></label>
-<select name="role" class="small-input">
+<select name="role" class="small-input" id="role">
 <option value="">選択してください</option>
 {{html_options options=$a->roleOptions() selected=$a->role}}
 </select>
 </p>
+<div class="check_list" id="allowed_entity_div" style="display:none">
+<label for="allowed_entity">アクセス可能なメニュー<sup title="必須">*</sup></label>
+<ul>{{html_checkboxes name='allowed_entity' options=$a->meta_entity_idOptions() selected=$a->allowed_entity assign=cbs}}
+{{foreach item=cb from=$cbs}}
+<li>{{$cb}}</li>
+{{/foreach}}
+</ul>
+<div class="clear"></div>
+</div>
 <p>
 <input type="submit" name="action:doRegist" value="登録する" class="button" onclick="return confirm('アカウントを作成します。よろしいですか？');" />
 <input type="button" name="doBack" value="戻る" class="button button-back" onclick="location.href='list.html?action:doBack=true';" />

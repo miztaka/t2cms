@@ -62,10 +62,13 @@ class AdminActionBase extends MyActionBase {
     public function meta_entity_idOptions() {
         if (! is_array($this->_meta_entity_idOptions)) {
             $result = array();
+            $list = $this->objects();
+            /*
             $list = Entity_MetaEntity::get()
                 ->eq('delete_flg', 0)
                 ->order('id')
                 ->select();
+                */
             foreach ($list as $e) {
                 $result[$e->id] = $e->label;
             }

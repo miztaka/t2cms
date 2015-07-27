@@ -23,13 +23,13 @@ Home
 </a>
 </li>
 
-{{foreach from=$a->objects() item=object}}{{if $object->hide_flg ne '1'}}
+{{foreach from=$a->objects() item=object}}{{if $object->hide_flg ne '1'}}{{if $a->loginaccount->canAccess($object->id)}}
 <li>
 <a id="menu_cms_{{$object->id}}" href="{{$a->appPath()}}/admin/cms/list.html?meta_entity_id={{$object->id}}" class="nav-top-item no-submenu"> <!-- Add the class "no-submenu" to menu items with no sub menu -->
 {{$object->label|escape}}
 </a>
 </li>
-{{/if}}{{/foreach}}
+{{/if}}{{/if}}{{/foreach}}
 
 {{if $a->loginaccount->hasRole('sysadm,admin')}}
 <li>

@@ -73,6 +73,9 @@ __all:
             }
 
             $account->convert2Page($this);
+            if (! Teeple_Util::isBlank($this->allowed_entity)) {
+            	$this->allowed_entity = unserialize($this->allowed_entity);
+            }
             $this->crudType = "U";
         }
         
@@ -84,6 +87,12 @@ __all:
      * @return unknown_type
      */
     public function doRegist() {
+    	
+    	// limitedアカウントの場合はアクセス可能なメニューが１つ以上選択されていること
+    	if ($this->role == 'limited' && empty($this->allowed_entity)) {
+    		$this->request->addErrorMessage("アクセス可能なメニューを１つ以上選択してください。");
+    		return $this->onValidateError();
+    	}
         
         if ($this->crudType == "U") {
             // 更新

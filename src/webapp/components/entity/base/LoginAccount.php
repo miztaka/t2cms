@@ -59,6 +59,7 @@ class Entity_Base_LoginAccount extends Teeple_ActiveRecord
     public $created_by;
     public $modified_by;
     public $version;
+    public $allowed_entity;
 
     
     /**

@@ -59,6 +59,27 @@ class LoginAccountAdmin {
     }
     
     /**
+     * 指定されたエンティティにアクセス可能かどうか
+     * limited以外のアカウント 全アクセス可能
+     * limitedでアクセス可能メニューが選択されていればアクセス可能
+     * 
+     * @param unknown $meta_entity_id
+     */
+    public function canAccess($meta_entity_id) {
+    	
+    	if ($this->info->role != 'limited') {
+    		return true;
+    	}
+    	if (! Teeple_Util::isBlank($this->info->allowed_entity)) {
+    		$ids = unserialize($this->info->allowed_entity);
+    		if (in_array($meta_entity_id, $ids)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
      * セッションが有効かどうか
      *
      * @return boolean
