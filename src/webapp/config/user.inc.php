@@ -40,7 +40,7 @@ Teeple_Smarty4Maple::setOptions(array(
 define('DEFAULT_DATASOURCE','teeple2cms');
 Teeple_DataSource::setDataSource(array(
     'teeple2cms' => array(
-        'dsn' => 'mysql:host=192.168.100.2;dbname=teeple2cms;charset=utf8',
+        'dsn' => 'mysql:host=127.0.0.1;dbname=teeple2cms;charset=utf8',
         'user' => 'teeple2cms',
         'pass' => 'teeple2cms'
     )
