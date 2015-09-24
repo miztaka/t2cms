@@ -21,5 +21,5 @@ CREATE TABLE login_account
 INSERT INTO login_account (
     login_id, login_pw, name, role, create_time
 ) VALUES (
-    'admin','hogehoge','管理者','sysadm',now()
+    'admin','746e63cb55297d4d66165d58ce167b7fbe45b8be','管理者','sysadm',now()
 );
