@@ -306,6 +306,7 @@ __all:
         }
         
         $csvWriter = new Writer_CsvWriter($csvdef, true);
+        $csvWriter->charset = "UTF-8";
         $renderer = new Admin_Cms_List_Renderer($this);
         
         if(isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'],'MSIE')) {
@@ -314,12 +315,14 @@ __all:
         $entity_name = $this->_record->_metaEntity->pname;
         header("Content-disposition: attachment; filename={$entity_name}.csv");
         header("Content-type: application/octet-stream; name={$entity_name}.csv");
+        print(pack('C*',0xEF,0xBB,0xBF)); // BOM出力
         $csvWriter->outputCsv($this->searchResult, $renderer);
         
         // 200件以上ある場合は再度実行
         $numOutput = count($this->searchResult);
         if ($numOutput < $this->numOfResults) {
-            $csvWriter = new Writer_CsvWriter($csvdef, false);
+            //$csvWriter = new Writer_CsvWriter($csvdef, false);
+            $csvWriter->isHeader = false;
             do {
                 $searchConds->pagenum++;
                 $this->execSearch($searchConds);

@@ -8,8 +8,8 @@
 class Writer_CsvWriter
 {
     protected $columnDef = array();
-    protected $isHeader = FALSE;
-    protected $charset = "sjis-win";
+    public $isHeader = FALSE;
+    public $charset = "sjis-win";
     
     
     public function __construct($columnDef, $isHeader = FALSE) {
