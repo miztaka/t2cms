@@ -292,6 +292,7 @@ __all:
         $searchConds->pagenum = 0;
         $searchConds->limit = 200;
         $this->execSearch($searchConds);
+        $this->prepare4Download();
         
         $csvdef = array(
             "レコードID" => "id",
@@ -326,6 +327,7 @@ __all:
             do {
                 $searchConds->pagenum++;
                 $this->execSearch($searchConds);
+                $this->prepare4Download();
                 $csvWriter->outputCsv($this->searchResult, $renderer);
                 $numOutput += count($this->searchResult);
             } while ($numOutput < $this->numOfResults);
@@ -333,6 +335,37 @@ __all:
         
         $this->request->completeResponse();
         return NULL;
+    }
+    
+    /**
+     * ダウンロード用にデータを加工します
+     * $this->searchResultが対象
+     */
+    private function prepare4Download() {
+    	
+    	$refAttrs = $this->refAttributes();
+    	if (empty($refAttrs)) {
+    		return; // do nothing
+    	}
+    	
+    	// pname => refOptions
+    	$refOptions = array();
+    	foreach ($refAttrs as $refAttr) {
+    		$refOptions[$refAttr->pname] = $refAttr->getRefOptions();
+    	}
+    	
+    	// 参照フィールドの値を"名前"に置き換える(ID -> 名前)
+    	foreach ($this->searchResult as $record) {
+    		foreach ($refOptions as $pname => $refOption) {
+    			$id = $record->$pname;
+    			if (strlen($id)) {
+    				$name = $refOption[$id];
+    			}
+    			$record->$pname = $name;
+    		}
+    	}
+    	
+    	return;
     }
     
     /**

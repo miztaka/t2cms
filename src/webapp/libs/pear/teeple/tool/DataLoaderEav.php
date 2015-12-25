@@ -23,6 +23,12 @@ require_once 'PHPExcel/IOFactory.php';
  * @package teeple.tool
  */
 class Teeple_Tool_DataLoaderEav extends Teeple_Tool_DataLoader {
+	
+	/**
+	 * 参照フィールドのオプションを保持します。(getEntityのタイミングで生成)
+	 * entity name => attr name => refOptions flipped
+	 */
+	protected $refOptionsByEntity = array();
     
     //================ hook ==================//
     
@@ -44,7 +50,16 @@ class Teeple_Tool_DataLoaderEav extends Teeple_Tool_DataLoader {
      * @param string $name
      */
     protected function getEntity($name) {
+    	
         $entity = new Teeple_EavRecord($name);
+        if (! isset($this->refOptionsByEntity[$name])) {
+        	$this->refOptionsByEntity[$name] = array();
+        	foreach ($entity->_metaAttributes as $attr) {
+        		if ($attr->data_type == Entity_MetaAttribute::DATA_TYPE_REF) {
+        			$this->refOptionsByEntity[$name][$attr->pname] = array_flip($attr->getRefOptions());
+        		}
+        	}
+        }
         return $entity;
     }
     
@@ -66,6 +81,27 @@ class Teeple_Tool_DataLoaderEav extends Teeple_Tool_DataLoader {
             }
         }
         $entity->$prop = $value;
+    }
+    
+    /**
+     * データ登録前にデータの加工が必要な場合、ここで行ないます。
+     * @param Teeple_EavRecord $entity
+     */
+    protected function prepare4Load($entity) {
+    	
+    	$name = $entity->_metaEntity->pname;
+    	if (empty($this->refOptionsByEntity[$name])) {
+    		return;
+    	}
+    	foreach ($this->refOptionsByEntity[$name] as $pname => $refOptionFlipped) {
+    		$label = $entity->$pname;
+    		if (! Teeple_Util::isBlank($label) && isset($refOptionFlipped[$label])) {
+    			$entity->$pname = $refOptionFlipped[$label];
+    		}
+    	}
+    	
+    	// do nothing
+    	return;
     }
     
 }

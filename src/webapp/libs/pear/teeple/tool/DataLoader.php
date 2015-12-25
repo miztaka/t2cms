@@ -141,6 +141,7 @@ class Teeple_Tool_DataLoader {
                 //$cellIterator->next();
                 $i++;
             }
+            $this->prepare4Load($entity);
             try {
                 $entity->insert();
             } catch (Exception $e) {
@@ -186,6 +187,15 @@ class Teeple_Tool_DataLoader {
      */
     protected function setValue2Entity($entity, $prop, $value) {
         $entity->$prop = $value;
+    }
+    
+    /**
+     * データ登録前にデータの加工が必要な場合、ここで行ないます。
+     * @param Teeple_ActiveRecord $entity
+     */
+    protected function prepare4Load($entity) {
+    	// do nothing
+    	return;
     }
     
 }
