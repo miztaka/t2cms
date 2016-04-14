@@ -765,7 +765,7 @@ function elDialogForm(o) {
 				width.val(toPixels(w));
 				m = s ? s.match(/(solid|dashed|dotted|double|groove|ridge|inset|outset)/i) :'';
 				style.val(m ? m[1] : '');
-				color.val(c.indexOf('#') === 0 ? c : rgb2hex(c));
+				color.val(c.indexOf('#') === 0 ? c : rgb2hex(c)); // TODO IE8ここでnullpoでてる
 				return this;
 			}
 		}
@@ -1118,7 +1118,6 @@ function elDialogForm(o) {
 (function($) {
 
 elRTE = function(target, opts) {
-
 	if (!target || !target.nodeName) {
 		return alert('elRTE: argument "target" is not DOM Element');
 	}
@@ -1213,17 +1212,15 @@ elRTE = function(target, opts) {
 					} else {
 						self.updateSource();
 						self.source.focus();
-						if ($.browser.msie) {
-							// @todo
-						} else {
+						if (self.source[0].setSelectionRange) {
 							self.source[0].setSelectionRange(0, 0);
+						} else {
+							// TODO under IE9
 						}
 						self.ui.disable();
 						self.statusbar.empty();
-						
 					}
 				}
-				
 			});
 	}
 	
@@ -1232,7 +1229,8 @@ elRTE = function(target, opts) {
 	this.$doc   = $(this.doc);
 	
 	/* put content into iframe */
-	html = '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
+	//html = '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
+	html = '<!doctype html><html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 	$.each(self.options.cssfiles, function() {
 		html += '<link rel="stylesheet" type="text/css" href="'+this+'" />';
 	});
@@ -1243,12 +1241,24 @@ elRTE = function(target, opts) {
 	this.doc.close();
 	
 	/* make iframe editable */
+	/*
 	if ($.browser.msie) {
 		this.doc.body.contentEditable = true;
 	} else {
 		try { this.doc.designMode = "on"; } 
 		catch(e) { }
 		this.doc.execCommand('styleWithCSS', false, this.options.styleWithCSS);
+	}
+	*/
+	if ('isContentEditable' in document.createElement('span')) {
+		this.doc.body.contentEditable = true;
+		//this.doc.execCommand('styleWithCSS', false, this.options.styleWithCSS);
+		this.setStyleWithCSS(this.doc, this.options.styleWithCSS);
+	} else {
+		try { this.doc.designMode = "on"; }
+		catch(e) { }
+		//this.doc.execCommand('styleWithCSS', false, this.options.styleWithCSS);
+		this.setStyleWithCSS(this.doc, this.options.styleWithCSS);
 	}
 	
 	if (this.options.height>0) {
@@ -1515,7 +1525,40 @@ elRTE.prototype.log = function(msg) {
 	if (window.console && window.console.log) {
 		window.console.log(msg);
 	}
-        
+}
+
+/* IE11対応 */
+elRTE.prototype.setStyleWithCSS = function(target, val) {
+	/*
+    try {
+        target.execCommand("styleWithCSS", 0, false);
+    } catch (e) {
+        try {
+            Editor.execCommand("useCSS", 0, true);
+        } catch (e) {
+            try {
+                Editor.execCommand('styleWithCSS', false, false);
+            }
+            catch (e) {
+            }
+        }
+    }
+    */
+    try {
+    	target.execCommand('styleWithCSS', false, val);
+    } catch (e1) {
+    	try {
+    		this.log(e1);
+    		target.execCommand('styleWithCSS', 0, val);
+    	} catch (e2) {
+    		try {
+    			this.log(e2);
+    			target.execCommand('useCSS', 0, !val);
+    		} catch (e3) {
+    			this.log(e3);
+    		}
+    	}
+    }
 }
 
 elRTE.prototype.i18Messages = {};
@@ -1548,7 +1591,7 @@ $.fn.elrte = function(o, v) {
 		if (!this.length) {
 			return '';
 		} else if (this.length == 1) {
-			return v ? this[0].elrte.val(v) : this[0].elrte.val();
+			return v || v === '' ? this[0].elrte.val(v) : this[0].elrte.val();
 		} else {
 			ret = {}
 			this.each(function() {
@@ -2335,7 +2378,6 @@ elRTE.prototype.dom = function(rte) {
 				html = this.call(self, html);
 			});
 			html = html.replace(/\t/g, '  ').replace(/\r/g, '').replace(/\s*\n\s*\n+/g, "\n")+'  ';
-			//return $.trim(html) ? html : ' ';
 			return $.trim(html) ? html : '&nbsp;';
 		}
 		
@@ -3122,7 +3164,6 @@ elRTE.prototype.history = function(rte) {
 	this._prev = []
 	this._next = [];
 
-	
 	this.add = function() {
 		if (this.rte.options.historyLength>0 && this._prev.length>= this.rte.options.historyLength) {
 			this._prev.slice(this.rte.options.historyLength);
@@ -3515,6 +3556,9 @@ elRTE.prototype.selection = function(rte) {
 			r.setStartBefore(s);
 			r.setEndAfter(e);
 			sel.removeAllRanges();
+			if (this.rte.dom.next(s) == e) { // for IE11
+				r.collapse(true);
+			}
 			sel.addRange(r);
 		}
 		return this.cleanCache();
@@ -3684,7 +3728,6 @@ elRTE.prototype.selection = function(rte) {
 					sel.removeAllRanges();
 					sel.addRange(r);
 				}
-				
 				s.parentNode.removeChild(s);
 				e.parentNode.removeChild(e);
 			}
@@ -4622,7 +4665,7 @@ elRTE.prototype.utils = function(rte) {
 		c = $.trim(c); 
 		// this.rte.log(c)
 		return c.length ? this.makeObject(c.split(/\s+/)) : {};
-		return c.length ? c.split(/\s+/) : [];
+		//return c.length ? c.split(/\s+/) : [];
 	}
 
 	/**
@@ -4764,7 +4807,7 @@ elRTE.prototype.w3cRange = function(rte) {
 				return {parent : self.rte.doc.body, ndx : ndx, offset : offset};
 			}
 
-			r.pasteHTML(marker);
+			r.pasteHTML(marker); // TODO IE11ダメっぽい
 			
 			childs = p.childNodes;
 			for (var i=0; i < childs.length; i++) {
@@ -4805,12 +4848,12 @@ elRTE.prototype.w3cRange = function(rte) {
 			end.parent.normalize();
 			start.ndx = Math.min(start.ndx, start.parent.childNodes.length-1);
 			end.ndx = Math.min(end.ndx, end.parent.childNodes.length-1);
-			if (start.parent.childNodes[start.ndx].nodeType && start.parent.childNodes[start.ndx].nodeType == 1) {
+			if (start.parent.childNodes[start.ndx].nodeType && start.parent.childNodes[start.ndx].nodeType == 1) { // TODO IE8エラー
 				this.setStart(start.parent, start.ndx);
 			} else {
 				this.setStart(start.parent.childNodes[start.ndx], start.offset);
 			}
-			if (end.parent.childNodes[end.ndx].nodeType && end.parent.childNodes[end.ndx].nodeType == 1) {
+			if (end.parent.childNodes[end.ndx].nodeType && end.parent.childNodes[end.ndx].nodeType == 1) { // TODO IE8エラー
 				this.setEnd(end.parent, end.ndx);
 			} else {
 				this.setEnd(end.parent.childNodes[end.ndx], end.offset);
@@ -7391,12 +7434,21 @@ elRTE.prototype.ui.prototype.buttons.pasteformattext = function(rte, name) {
 		this.doc.write(html);
 		this.doc.close();
 
+		/* IE11対応
 		if (!this.rte.browser.msie) {
 			try { this.doc.designMode = "on"; } 
 			catch(e) { }
 		} else {
 			this.doc.body.contentEditable = true;
 		}
+		*/
+		if ('isContentEditable' in document.createElement('span')) {
+			this.doc.body.contentEditable = true;
+		} else {
+			try { this.doc.designMode = "on"; }
+			catch(e) { }
+		}		
+		
 		setTimeout(function() { self.iframe[0].contentWindow.focus(); }, 50);
 	}
 	
