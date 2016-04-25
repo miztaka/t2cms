@@ -1,6 +1,6 @@
 <?php
 /**
- * Qdmail ver 1.2.6b
+ * Qdmail ver 1.2.6b (github版)
  * E-Mail for multibyte charset
  *
  * PHP versions 4 and 5 (PHP4.3 upper)
@@ -3348,7 +3348,7 @@ $this->debugEchoLf($this->to);
 		return false;
 	}
 
-	function log( $mes = null ){
+	function log( $mes = null, $type = 2 ){
 		if( is_null( $mes )){
 			$addrs = $this->done() ;
 //			$this->done = array();
@@ -3758,7 +3758,7 @@ class QdmailComponent extends QdmailUserFunc{
 	//----------------------------
 	// Override Parent Method
 	//----------------------------
-	function & smtpObject(){
+	function & smtpObject( $null = false ){
 		if( isset( $this->Qdsmtp ) && is_object( $this->Qdsmtp ) ){
 			return $this->Qdsmtp;
 		}
@@ -4117,4 +4117,5 @@ class QdDeco{
 		}
 	return true;
 	}
-}?>
+}
+

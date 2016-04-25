@@ -75,7 +75,7 @@ class Teeple_Smarty4Maple extends Smarty
      *
      * @return  Teeple_Smarty4Maple 
      */
-    public function getInstance() {
+    static public function getInstance() {
 
         static $instance;
         if ($instance === NULL) {

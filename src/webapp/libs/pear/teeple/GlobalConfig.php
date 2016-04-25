@@ -284,7 +284,7 @@ class Teeple_GlobalConfig
      * @access public
      * @return boolean
      */
-    function loadConstantsFromFile($filename)
+    static function loadConstantsFromFile($filename)
     {
         $config = new Teeple_GlobalConfig(true);
         if(!$config->loadFromFile($filename)) {

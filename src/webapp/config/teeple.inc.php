@@ -50,8 +50,9 @@ mb_internal_encoding(INTERNAL_CODE);
 // 基本クラスの読み込み
 //
 //ini_set('include_path', LOG4PHP_DIR . PATH_SEPARATOR . ini_get('include_path'));
-//include_once LOG4PHP_DIR .'/Logger.php';
+include_once LOG4PHP_DIR .'/Logger.php';
 include_once LOG4PHP_DIR .'/LoggerManager.php';
+Logger::configure(LOG4PHP_CONFIGURATION);
 
 //
 // autoload
@@ -62,7 +63,7 @@ function loadComponentClass($name) {
     Teeple_Util::includeClassFile($name);
 }
 function __autoload($clsname) {
-    loadComponentClass($clsname);
+	loadComponentClass($clsname);
 }
 if (function_exists('spl_autoload_register')) {
     spl_autoload_register('loadComponentClass');

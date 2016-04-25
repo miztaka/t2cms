@@ -134,7 +134,7 @@ class Net_UserAgent_Mobile
      *     Net_UserAgent_Mobile_Common object
      * @throws Net_UserAgent_Mobile_Error
      */
-    function &factory($userAgent = null)
+    static function factory($userAgent = null)
     {
         if (is_null($userAgent)) {
             $userAgent = @$_SERVER['HTTP_USER_AGENT'];
@@ -197,7 +197,7 @@ class Net_UserAgent_Mobile
      *     Net_UserAgent_Mobile_Common object
      * @throws Net_UserAgent_Mobile_Error
      */
-    function &singleton($userAgent = null)
+    static function singleton($userAgent = null)
     {
         static $instances;
 
@@ -225,7 +225,7 @@ class Net_UserAgent_Mobile
      * @param integer $value result code
      * @return boolean whether $value is an {@link Net_UserAgent_Mobile_Error}
      */
-    function isError($value)
+    static function isError($value)
     {
         return is_object($value)
             && (strtolower(get_class($value)) == strtolower('Net_UserAgent_Mobile_Error')
@@ -272,7 +272,7 @@ class Net_UserAgent_Mobile
      * @return boolean
      * @since Method available since Release 0.31.0
      */
-    function isMobile($userAgent = null)
+    static function isMobile($userAgent = null)
     {
         if (Net_UserAgent_Mobile::isDoCoMo($userAgent)) {
             return true;
@@ -297,7 +297,7 @@ class Net_UserAgent_Mobile
      * @return boolean
      * @since Method available since Release 0.31.0
      */
-    function isDoCoMo($userAgent = null)
+    static function isDoCoMo($userAgent = null)
     {
         if (is_null($userAgent)) {
             $userAgent = @$_SERVER['HTTP_USER_AGENT'];
@@ -320,7 +320,7 @@ class Net_UserAgent_Mobile
      * @return boolean
      * @since Method available since Release 0.31.0
      */
-    function isEZweb($userAgent = null)
+    static function isEZweb($userAgent = null)
     {
         if (is_null($userAgent)) {
             $userAgent = @$_SERVER['HTTP_USER_AGENT'];
@@ -345,7 +345,7 @@ class Net_UserAgent_Mobile
      * @return boolean
      * @since Method available since Release 0.31.0
      */
-    function isSoftBank($userAgent = null)
+    static function isSoftBank($userAgent = null)
     {
         if (is_null($userAgent)) {
             $userAgent = @$_SERVER['HTTP_USER_AGENT'];
@@ -382,7 +382,7 @@ class Net_UserAgent_Mobile
      * @return boolean
      * @since Method available since Release 0.31.0
      */
-    function isWillcom($userAgent = null)
+    static function isWillcom($userAgent = null)
     {
         if (is_null($userAgent)) {
             $userAgent = @$_SERVER['HTTP_USER_AGENT'];
