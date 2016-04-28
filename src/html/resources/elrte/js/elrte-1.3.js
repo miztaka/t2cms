@@ -761,6 +761,9 @@ function elDialogForm(o) {
 					s = v.style||'';
 					c = v.color||'';
 				}
+				if (!c) { // fix IE8
+					c = '#000000';
+				}
 
 				width.val(toPixels(w));
 				m = s ? s.match(/(solid|dashed|dotted|double|groove|ridge|inset|outset)/i) :'';
@@ -1674,6 +1677,9 @@ elRTE.prototype.dom = function(rte) {
 	 * @return string
 	 **/
 	this.attr = function(n, attr) {
+		if (!n) {
+			return "";
+		}
 		var v = '';
 		if (n.nodeType == 1) {
 			v = $(n).attr(attr);
@@ -3485,13 +3491,13 @@ elRTE.prototype.selection = function(rte) {
 		var s = selection();
 		var r = s.rangeCount > 0 ? s.getRangeAt(0) : this.rte.doc.createRange();
 		r.getStart = function() {
-			return this.startContainer.nodeType==1 
+			return this.startContainer.nodeType==1 && this.startContainer.childNodes.length > 0
 				? this.startContainer.childNodes[Math.min(this.startOffset, this.startContainer.childNodes.length-1)] 
 				: this.startContainer;
 		}
 		
 		r.getEnd = function() {
-			return this.endContainer.nodeType==1 
+			return this.endContainer.nodeType==1 && this.startContainer.childNodes.length > 0
 				? this.endContainer.childNodes[ Math.min(this.startOffset == this.endOffset ? this.endOffset : this.endOffset-1, this.endContainer.childNodes.length-1)] 
 				: this.endContainer;
 		}
@@ -6245,6 +6251,7 @@ elRTE.prototype.ui.prototype.buttons.fullscreen = function(rte, name) {
 elRTE.prototype.ui.prototype.buttons.horizontalrule = function(rte, name) {
 	this.constructor.prototype.constructor.call(this, rte, name);
 	var self = this;
+	var bookmarks = null;
 	this.src = {
 		width   : $('<input type="text" />').attr({'name' : 'width', 'size' : 4}).css('text-align', 'right'),
 		wunit   : $('<select />').attr('name', 'wunit')
@@ -6263,6 +6270,7 @@ elRTE.prototype.ui.prototype.buttons.horizontalrule = function(rte, name) {
 		
 		var n   = this.rte.selection.getEnd();
 		this.hr = n.nodeName == 'HR' ? $(n) : $(rte.doc.createElement('hr')).css({width : '100%', height : '1px'});
+		bookmarks = self.rte.selection.getBookmark();
 		this.src.border.elBorderSelect({styleHeight : 73, value : this.hr});
 		
 		var _w  = this.hr.css('width') || this.hr.attr('width');
@@ -6280,6 +6288,9 @@ elRTE.prototype.ui.prototype.buttons.horizontalrule = function(rte, name) {
 			submit : function(e, d) { e.stopPropagation(); e.preventDefault(); self.set(); d.close(); },
 			dialog : {
 				title : this.rte.i18n('Horizontal rule')
+			},
+			close : function() {
+				bookmarks && self.rte.selection.moveToBookmark(bookmarks);
 			}
 		}
 
@@ -6295,7 +6306,7 @@ elRTE.prototype.ui.prototype.buttons.horizontalrule = function(rte, name) {
 	
 	this.update = function() {
 		this.domElem.removeClass('disabled');
-		if (this.rte.selection.getEnd().nodeName == 'HR') {
+		if (this.rte.selection.getEnd() && this.rte.selection.getEnd().nodeName == 'HR') {
 			this.domElem.addClass('active');
 		} else {
 			this.domElem.removeClass('active');
@@ -6304,6 +6315,7 @@ elRTE.prototype.ui.prototype.buttons.horizontalrule = function(rte, name) {
 	
 	this.set = function() {
 		this.rte.history.add();
+		bookmarks && self.rte.selection.moveToBookmark(bookmarks);
 		!this.hr.parentNode && this.rte.selection.insertNode(this.hr.get(0));
 		var attr = {
 			noshade : true,
@@ -7676,6 +7688,7 @@ elRTE.prototype.ui.prototype.buttons.table = function(rte, name) {
 	var self    = this;
 	this.src    = null;
 	this.labels = null;
+	var bookmarks = null;
 	
 	function init() {
 		self.labels = {
@@ -7786,6 +7799,7 @@ elRTE.prototype.ui.prototype.buttons.table = function(rte, name) {
 		} else {
 			this.table = n ? $(n) : $(this.rte.doc.createElement('table'));					
 		}
+		bookmarks = self.rte.selection.getBookmark();
 		
 		!this.src && init();
 		this.src.main.border.elBorderSelect({styleHeight : 117});
@@ -7834,6 +7848,9 @@ elRTE.prototype.ui.prototype.buttons.table = function(rte, name) {
 			dialog : {
 				width : 530,
 				title : this.rte.i18n('Table')
+			},
+			close : function() {
+				bookmarks && self.rte.selection.moveToBookmark(bookmarks);
 			}
 		}
 		var d = new elDialogForm(opts);
@@ -7883,7 +7900,9 @@ elRTE.prototype.ui.prototype.buttons.table = function(rte, name) {
 			if (r<=0 || c<=0) {
 				return;
 			}
-			this.rte.history.add(); 
+			this.rte.history.add();
+			bookmarks && self.rte.selection.moveToBookmark(bookmarks);
+			
 			var b = $(this.rte.doc.createElement('tbody')).appendTo(this.table);
 			
 			for (var i=0; i < r; i++) {

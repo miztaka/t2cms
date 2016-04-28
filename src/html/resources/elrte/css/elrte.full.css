@@ -1,9 +1,9 @@
 /*!
  * elRTE WYSIWYG HTML-editor
- * Version 1.2 (2010-12-12)
+ * Version 1.3 (2011-06-23)
  * http://elrte.org
  *
- * Copyright 2010, Studio 42 Ltd.
+ * Copyright 2009-2011, Studio 42 Ltd.
  * Licensed under a 3 clauses BSD license
  */
 
@@ -51,7 +51,7 @@ a { outline: none; }
 	border:1px solid #ccc;
 	background:#fff;
 	padding:3px 2px 3px 3px;
-	z-index:10000; /* fight with ui.dialog 0_o */
+	z-index:99000; /* fight with ui.dialog 0_o */
 	position:absolute;
 	top:16px;
 	left:0;
@@ -233,7 +233,6 @@ a { outline: none; }
 	white-space:nowrap;
 	display:block;
 }
-
 /*  контейнер */
 .el-rte { 
 	font-family: Trebuchet MS, Verdana, Geneva,sans-serif;
@@ -247,7 +246,7 @@ a { outline: none; }
 	top:0;
 	left:0;
 	margin:0;
-/*	z-index:101;*/
+	z-index:10;
 }
 
 .elrte-swf-placeholder {
@@ -297,13 +296,15 @@ a { outline: none; }
 	padding:0; /* Joomla 1.6 compat */
 	background:url('../images/elrte-toolbar.png') no-repeat; 
 	border:1px solid #ccc;	
+	z-index:100;
+
 }
 /* активная и подсвеченная и неактивная кнопка */
 .el-rte .toolbar ul li.hover    { border:1px solid #54b9bf; }
 .el-rte .toolbar ul li.active   { background-color:#c3dbef; border:1px solid #fff; }
 .el-rte .toolbar ul li.disabled { opacity:alpha(0.3); opacity: 0.3; filter:Alpha(Opacity=30);}
 /*  кнопки  */
-.el-rte .toolbar ul li.about                {background-position:-829px -5px;}
+.el-rte .toolbar ul li.about               {background-position:-829px -5px;}
 .el-rte .toolbar ul li.save                {background-position:-30px -2px;}
 .el-rte .toolbar ul li.new                 {background-position:-55px -2px}
 .el-rte .toolbar ul li.copy                {background-position:-78px -2px}
@@ -460,22 +461,20 @@ a { outline: none; }
 .el-rte-rtl .toolbar ul li div.color-indicator {
 	margin:16px 2px 2px 0;
 }
+.el-rte .toolbar .panel-format { z-index: 10; }
+
 /* colors palette */
 .el-palette { top:20px; }
 
-.el-dialogform, .el-dialogform td  { font-size:.9em; }
-.el-dialogform select { font-size:.9em;}
-.ui-dialog .ui-dialog-buttonpane { padding: .4em, 1em;}
+.el-dialogform, .el-dialogform td       { font-size:.9em; }
+.el-dialogform select                   { font-size:.9em;}
+.ui-dialog .ui-dialog-buttonpane        { padding: .4em, 1em;}
 .ui-dialog .ui-dialog-buttonpane button { margin: .3em .4em .1em 0; font-size:.9em;}
-.ui-dialog .ui-dialog-titlebar { padding: .3em 1em .3em;   }
+.ui-dialog .ui-dialog-titlebar          { padding: .3em 1em .3em;   }
 /*.ui-dialog-buttonset { padding:0; background-color:#333;}*/
 /* диалоговые окна */
-.el-dialogform label {
-	display:block;
-}
-.el-dialogform label input {
-	margin-right:2px;
-}
+.el-dialogform label       { display:block; }
+.el-dialogform label input { margin-right:2px; }
 .el-dialogform iframe.el-rte-preview {
 	width : 100%;
 	height : 235px;
@@ -495,9 +494,8 @@ a { outline: none; }
 	border:1px solid #ccc;
 	background-color: #eee;
 }
-.el-dialogform p { padding:.2em .3em;}
+.el-dialogform p  { padding:.2em .3em;}
 .el-dialogform h3 { color:#555; padding:1.2em 0 0 0; margin:0; font-size:1.2em; }
-
 .el-dialogform h4 { color:#555;font-size:1em; padding:0; margin: 3px 9px; }
 
 .elrte-logo { 
@@ -507,10 +505,11 @@ a { outline: none; }
 	margin:.5em 1em;
 	background:url('../images/elrte-toolbar.png') -880px -7px no-repeat;
 }
-.elrte-ver { font-size:.9em; padding-left:.7em;}
-.elrte-copy { font-size:.9em; padding-left:.3em;}
-table.elrte-authors { margin-bottom:1em;}
-table.elrte-authors td { border-bottom:1px solid #eee;}
+.elrte-ver  { font-size:.9em; padding-left:.7em; }
+.elrte-copy { font-size:.9em; padding-left:.3em; }
+table.elrte-authors    { margin-bottom:1em; }
+table.elrte-authors td { border-bottom:1px solid #eee; }
+
 /* widgets */
 .el-borderselect {}
 .el-borderselect table      {  margin:0; }
@@ -523,6 +522,15 @@ table.elrte-authors td { border-bottom:1px solid #eee;}
 
 .el-rte-smiley { margin:5px; }
 
-.panel-format {
-	z-index: 1000;
+.elrte-image-src-fm .ui-state-default {
+	float:right;
 }
+.el-dialogform-rtl .elrte-image-src-fm .ui-state-default { float:left;}
+
+.elrte-image-preview {
+	font-size:.7em;
+	overflow:auto;
+	height:240px;
+	width:480px;
+}
+

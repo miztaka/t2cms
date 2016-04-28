@@ -4,20 +4,20 @@
 <title>{{$smarty.const.HTML_TITLE_ADMIN}}</title>
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
 {{include file='admin/parts/common_head.html'}}
-<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/jquery.upload-1.0.0.js"></script>
+
 <!-- elrte WYSIWYG -->
-<link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/smoothness/jquery-ui-1.8.13.custom.css" type="text/css" media="screen" charset="utf-8"></link>
-<link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/elrte.min.css"                         type="text/css" media="screen" charset="utf-8"></link>
-<script src="{{$a->basePath()}}/resources/elrte/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="{{$a->basePath()}}/resources/elrte/js/elrte-1.3.min.js"                  type="text/javascript" charset="utf-8"></script>
-<script src="{{$a->basePath()}}/resources/elrte/js/i18n/elrte.jp.js"              type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/elrte.min.css" type="text/css" media="screen" charset="utf-8"></link>
+<link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/elfinder.css" type="text/css" media="screen" charset="utf-8"></link>
+
+<script type="text/javascript" src="{{$a->basePath()}}/resources/scripts/jquery.upload-1.0.0.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/i18n/jquery.ui.datepicker-ja.min.js"></script>
+<!-- elrte WYSIWYG -->
+<script src="{{$a->basePath()}}/resources/elrte/js/elrte-1.3.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{$a->basePath()}}/resources/elrte/js/i18n/elrte.jp.js" type="text/javascript" charset="utf-8"></script>
 <!-- elFinder -->
 <script src="{{$a->basePath()}}/resources/elrte/js/elfinder.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="{{$a->basePath()}}/resources/elrte/js/i18n/elfinder.jp.js"           type="text/javascript" charset="utf-8"></script>
-<link rel="stylesheet" href="{{$a->basePath()}}/resources/elrte/css/elfinder.css" type="text/css" media="screen" charset="utf-8"></link>
-<!-- jquery-ui -->
-<script type="text/javascript" src="{{$a->basePath()}}/resources/jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
-<script type="text/javascript" src="{{$a->basePath()}}/resources/jquery-ui/js/jquery.ui.datepicker-ja.js"></script>
+<script src="{{$a->basePath()}}/resources/elrte/js/i18n/elfinder.jp.js" type="text/javascript" charset="utf-8"></script>
 <style type="text/css">
 img.calendar {
     cursor: pointer;
@@ -152,7 +152,8 @@ $(function() {
           }
     });
     $('.calendar').click(function() {
-        $(this).next().focus();
+        //$(this).next().focus();
+        $(this).next().datepicker('show');
     });
 
     // リソースのプレビュー
