@@ -149,7 +149,7 @@ class Teeple_Filter_FileUpload extends Teeple_Filter
             foreach ($error as $key => $val) {
                 if ($val != UPLOAD_ERR_OK) {// PHP自体が感知するエラーが発生した場合
                     if ($val == UPLOAD_ERR_INI_SIZE) {
-                        $this->request->setFilterError('FileUpload'');
+                        $this->request->setFilterError('FileUpload');
                         //$errorList->setType(UPLOAD_ERROR_TYPE);
                         if (isset($attributes["iniSizeError"])) {
                             $message = $attributes["iniSizeError"];
