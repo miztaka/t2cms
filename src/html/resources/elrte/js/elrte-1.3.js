@@ -6383,6 +6383,7 @@ elRTE.prototype.ui.prototype.buttons.image = function(rte, name) {
 					} else if (n == 'height') {
 						val = img.height();
 					} else if (n == 'border') {
+						/*
 						val = '';
 						border = img.css('border') || rte.utils.parseStyle(img.attr('style')).border || '';
 
@@ -6395,6 +6396,7 @@ elRTE.prototype.ui.prototype.buttons.image = function(rte, name) {
 								color : rte.utils.color2Hex(c ? c[1] : border)
 							}
 						} 
+						*/
 					} else if (n == 'margin') {
 						val = img;
 					} else if (n == 'align') { 
@@ -6410,8 +6412,12 @@ elRTE.prototype.ui.prototype.buttons.image = function(rte, name) {
 					if (i == 'events') {
 						val = rte.utils.trimEventCallback(val);
 					}
-
-					el.val(val);
+					
+					if (n == 'border') {
+						el.val(img);
+					} else {
+						el.val(val);
+					}
 				});
 			});
 		},
@@ -6733,9 +6739,12 @@ elRTE.prototype.ui.prototype.buttons.image = function(rte, name) {
 						if (!val.width) {
 							val = '';
 						} else {
+							/*
 							val = 'border:'+val.css+';'+$.trim((self.img.attr('style')||'').replace(/border\-[^;]+;?/ig, ''));
 							name = 'style';
 							self.img.attr('style', val)
+							*/
+							self.img.css('border', val.css);
 							return;
 						}
 
@@ -7688,7 +7697,6 @@ elRTE.prototype.ui.prototype.buttons.table = function(rte, name) {
 	var self    = this;
 	this.src    = null;
 	this.labels = null;
-	var bookmarks = null;
 	
 	function init() {
 		self.labels = {
@@ -7799,7 +7807,6 @@ elRTE.prototype.ui.prototype.buttons.table = function(rte, name) {
 		} else {
 			this.table = n ? $(n) : $(this.rte.doc.createElement('table'));					
 		}
-		bookmarks = self.rte.selection.getBookmark();
 		
 		!this.src && init();
 		this.src.main.border.elBorderSelect({styleHeight : 117});
@@ -7848,9 +7855,6 @@ elRTE.prototype.ui.prototype.buttons.table = function(rte, name) {
 			dialog : {
 				width : 530,
 				title : this.rte.i18n('Table')
-			},
-			close : function() {
-				bookmarks && self.rte.selection.moveToBookmark(bookmarks);
 			}
 		}
 		var d = new elDialogForm(opts);
@@ -7900,9 +7904,7 @@ elRTE.prototype.ui.prototype.buttons.table = function(rte, name) {
 			if (r<=0 || c<=0) {
 				return;
 			}
-			this.rte.history.add();
-			bookmarks && self.rte.selection.moveToBookmark(bookmarks);
-			
+			this.rte.history.add(); 
 			var b = $(this.rte.doc.createElement('tbody')).appendTo(this.table);
 			
 			for (var i=0; i < r; i++) {
