@@ -118,7 +118,7 @@ __all:
         }
         $entity->convert2Entity($this);
         if (Teeple_Util::isBlank($this->list_flg)) {
-            $entity->list_flg = NULL;
+            $entity->list_flg = 0;
         }
         if (Teeple_Util::isBlank($this->require_flg)) {
             $entity->require_flg = 0;

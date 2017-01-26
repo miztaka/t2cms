@@ -60,10 +60,19 @@ class Teeple_Cms_ControllerHook extends Teeple_ControllerHook
             $action = $this->actionChain->getCurAction();
             $action->_pageInfo = $page;
             $action->__smarty = Teeple_Smarty4Maple::getInstance();
-            return true;
+            return TRUE;
         }
         
-        return parent::actionClassNotFound($actionName);
+        // 404ページ
+        if (defined("ERROR404_PAGE")) {
+        	header("HTTP/1.1 301 Moved Permanently");
+        	header("Location: ". ERROR404_PAGE);
+        } else {
+        	header("HTTP/1.1 404 Not Found");
+        	print('Page Not Found');
+        }
+        return FALSE;
+        //return parent::actionClassNotFound($actionName);
     }
     
     /**
