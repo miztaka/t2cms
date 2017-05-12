@@ -17,7 +17,7 @@
 
 /**
  * Token処理を行うFilter
- * TODO 未検証
+ * Getリクエストだった場合は、build, Postリクエストだった場合は checkを行なう
  *
  * @package     teeple.filter
  */
@@ -31,19 +31,6 @@ class Teeple_Filter_Token extends Teeple_Filter
     public function setComponent_Teeple_Token($c) {
         $this->token = $c;
     }
-
-    /**
-     * @var Teeple_ActionChain
-     */
-    private $actionChain;
-    public function setComponent_Teeple_ActionChain($c) {
-        $this->actionChain = $c;
-    }
-    
-    /**
-     * @var Logger
-     */
-    private $log;
     
     /**
      * コンストラクタ
@@ -51,7 +38,6 @@ class Teeple_Filter_Token extends Teeple_Filter
      */
     public function __construct() {
         parent::__construct();
-        $this->log = LoggerManager::getLogger(get_class($this));
     }
 
     /**
@@ -59,45 +45,28 @@ class Teeple_Filter_Token extends Teeple_Filter
      *
      */
     public function prefilter() {
-
-        $this->token->setSession($this->session);
-
-        $attributes = $this->getAttributes();
-        if (isset($attributes["name"])) {
-            $this->token->setName($attributes["name"]);
-        }
-
-        $modeArray = array();
-        if (isset($attributes["mode"])) {
-            $modeArray = explode(",", $attributes["mode"]);
-            foreach ($modeArray as $key => $value) {
-                $modeArray[$key] = trim($value);
-            }
-        } else {
-            $modeArray[] = "build";
-        }
-
-        foreach ($modeArray as $value) {
-            switch ($value) {
-            case 'check':
-                if (!$this->token->check($this->request)) {
-                    $this->request->setFilterError('Token');
-                    $this->request->addErrorMessage('不正なアクセスです。');
-                    $this->log->warn('Tokenが不正です。');
-                }
-                break;
-            case 'remove':
-                $this->token->remove();
-                break;
-            case 'build':
-            default:
-                $this->token->build();
-                break;
-            }
-        }
+    	
+    	$action_name = $this->actionChain->getCurActionName();
+    	$token_name = "token_{$action_name}";
+    	$this->token->setName($token_name);
+    	
+    	$method = strtolower($this->request->getMethod());
+    	switch ($method) {
+    		case 'get':
+    			$this->token->build();
+    			break;
+    		case 'post':
+    			if (! $this->token->check()) {
+    				$this->request->setFilterError('Token');
+    				$this->request->addErrorMessage('不正なアクセスです。');
+    				$this->log->warn('Tokenが不正です。');
+    			}
+    			break;
+    	}
         return;
     }
     
     public function postfilter() {}
 }
+
 ?>
