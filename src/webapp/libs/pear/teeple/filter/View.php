@@ -106,6 +106,12 @@ class Teeple_Filter_View extends Teeple_Filter
                     //throw new Teeple_Exception("Viewのレンダリングに失敗しました。");
                 }
                 */
+                // CSRFトークンを強制セット
+                if ($this->request->forceTokenFlg) {
+                	$token = $this->token->build();
+                	$tag = sprintf('<input type="hidden" name="%s" value="%s" />', $this->token->getName(), $token);
+                	$result = str_replace("</form>", "{$tag}</form>", $result);
+                }
                 
                 $this->response->setResult($result);
             }

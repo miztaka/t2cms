@@ -271,6 +271,9 @@ __all:
      * 
      */
     protected function formPage() {
+    	
+    	// CSRFトークンをセット
+    	$this->request->forceTokenFlg = TRUE;
         return $this->_pageInfo->template_path .".html";
     }
     
@@ -308,6 +311,13 @@ __all:
         if ($this->_pageInfo->page_type != Entity_Page::PAGE_TYPE_FORM) {
             return $this->exit404("ページが見つかりません。");
         }
+        // CSRFトークンのチェック
+        if (! $this->teepleToken->check()) {
+        	$this->log->warn("CSRFトークンが一致しません。");
+        	return $this->onValidateError();
+        }
+        $this->teepleToken->remove();
+        
         // 入力値検証
         if (! $this->validate()) {
             return $this->onValidateError();
@@ -358,7 +368,7 @@ __all:
      * Validationエラー時の処理。
      */
     public function onValidateError() {
-        return $this->_pageInfo->template_path .".html";
+    	return $this->formPage();
     }
     
     /**

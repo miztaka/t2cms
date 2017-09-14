@@ -68,7 +68,7 @@ class Teeple_Token
     public function getName()
     {
         if ($this->_name == "") {
-            $this->_name = "teepleToken";
+            $this->_name = "__teepleToken";
         }
 
         return $this->_name;
@@ -106,7 +106,9 @@ class Teeple_Token
      */
     public function build()
     {
-        $this->_session->setParameter($this->getName(), md5(uniqid(rand(),1)));
+    	$newToken = md5(uniqid(rand(),1));
+        $this->_session->setParameter($this->getName(), $newToken);
+        return $newToken;
     }
 
     /**

@@ -68,6 +68,12 @@ class Teeple_Request
     private $completeResponseFlg = FALSE;
     
     /**
+     * CSRFトークンをformに強制的にセットするかどうか
+     * @var voolean
+     */
+    public $forceTokenFlg = FALSE;
+    
+    /**
      * 
      * @var boolean
      */
